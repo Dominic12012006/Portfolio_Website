@@ -41,6 +41,9 @@ export default function BuildPanel({
         }`}
       />
 
+      {/* Atmospheric edge dissolution into the center canvas */}
+      <div className="absolute top-0 bottom-0 right-0 w-16 md:w-32 bg-gradient-to-l from-background/90 via-background/40 to-transparent pointer-events-none z-[5]" />
+
       {/* Overlaid refined BUILD Typography */}
       <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-12 z-10 pointer-events-none">
         <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-widest text-foreground transition-colors duration-300 group-hover:text-accent">
