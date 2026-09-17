@@ -34,7 +34,11 @@ export default function CenterIdentity({
       </div>
 
       {/* Primary Identity Statement */}
-      <div className="relative z-10 text-center px-4 pointer-events-none transition-transform duration-500 ease-canvas">
+      <div
+        className={`relative z-10 text-center px-4 pointer-events-none transition-all duration-500 ease-canvas ${
+          isHovered ? "opacity-100 scale-[1.01]" : "opacity-90 scale-100"
+        }`}
+      >
         <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight tracking-widest text-foreground uppercase whitespace-nowrap">
           Dominic Thomas
         </h1>

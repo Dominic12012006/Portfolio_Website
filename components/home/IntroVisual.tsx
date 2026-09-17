@@ -26,12 +26,13 @@ export default function IntroVisual({
     <div className={`relative w-full h-full overflow-hidden select-none ${className}`}>
       {/* If an intro asset exists and hasn't finished, display it */}
       {asset.introSrc && !introFinished ? (
+        /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={asset.introSrc}
           alt={asset.alt}
           className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
           onLoad={() => {
-            // Can attach timing or ended handler when provided
+            setIntroFinished(true);
           }}
         />
       ) : (

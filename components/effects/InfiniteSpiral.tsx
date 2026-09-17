@@ -60,7 +60,6 @@ export default function InfiniteSpiral({
   centerScale = 1.18,
   edgeFade = 0.35,
   edgeBlur = 5,
-  pauseOnHover = false,
   imageFit = "cover",
   grayscale = 0,
   className = "",
@@ -218,6 +217,7 @@ export default function InfiniteSpiral({
               borderRadius: `${cardRadius}px`,
             }}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={item.src}
               alt={item.alt}
