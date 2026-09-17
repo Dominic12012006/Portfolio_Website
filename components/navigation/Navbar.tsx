@@ -12,13 +12,16 @@ export default function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50 h-[var(--navbar-height)] flex items-center justify-between px-4 sm:px-6 md:px-10 pointer-events-auto backdrop-blur-md bg-background/60 border-b border-border-subtle transition-colors duration-300">
       <Link
         href={ROUTES.home}
-        className="text-xs font-mono tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+        className="text-xs font-mono tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors z-10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
         aria-label="Dominic Thomas - Home"
       >
         DT
       </Link>
 
-      <nav aria-label="Main navigation">
+      <nav
+        aria-label="Main navigation"
+        className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-auto"
+      >
         <ul className="flex items-center gap-3 sm:gap-6 md:gap-8">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href;
@@ -43,6 +46,9 @@ export default function Navbar() {
           })}
         </ul>
       </nav>
+
+      {/* Symmetrical placeholder */}
+      <div className="w-6 hidden md:block" aria-hidden="true" />
     </header>
   );
 }

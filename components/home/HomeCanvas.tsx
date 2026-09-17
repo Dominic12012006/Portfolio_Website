@@ -14,10 +14,33 @@ interface HomeCanvasProps {
   children?: React.ReactNode; // Optional slot for Infinite Spiral in center
 }
 
+interface IncomingMeta {
+  route: string;
+  badge: string;
+  title: string;
+}
+
+const getRouteMeta = (route: string): IncomingMeta => {
+  if (route === ROUTES.build) {
+    return { route: ROUTES.build, badge: "[ Section // Build ]", title: "Build" };
+  }
+  if (route === ROUTES.about) {
+    return { route: ROUTES.about, badge: "[ Section // About ]", title: "About Me" };
+  }
+  return { route: ROUTES.experience, badge: "[ Gateway // Experience ]", title: "Experience" };
+};
+
 export default function HomeCanvas({ children }: HomeCanvasProps) {
   const router = useRouter();
   const [activeRegion, setActiveRegion] = useState<ActiveRegion>(null);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [isScrollingDown, setIsScrollingDown] = useState(false);
+  const [incomingMeta, setIncomingMeta] = useState<IncomingMeta>({
+    route: ROUTES.experience,
+    badge: "[ Gateway // Experience ]",
+    title: "Experience",
+  });
+
   const isNavigatingRef = useRef(false);
   const accumulatedWheelRef = useRef(0);
   const wheelResetTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -31,12 +54,28 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
     return () => window.removeEventListener("resize", updateMedia);
   }, []);
 
-  // Navigate safely to a target route with transition lock
-  const navigateTo = useCallback(
+  // Trigger window-scrolling page transition to target route
+  const triggerScrollNavigation = useCallback(
     (route: string) => {
       if (isNavigatingRef.current) return;
       isNavigatingRef.current = true;
-      router.push(route);
+
+      const prefersReducedMotion =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (prefersReducedMotion) {
+        router.push(route);
+        return;
+      }
+
+      setIncomingMeta(getRouteMeta(route));
+      setIsScrollingDown(true);
+
+      // Navigate as the window finishes scrolling down
+      setTimeout(() => {
+        router.push(route);
+      }, 550);
     },
     [router]
   );
@@ -46,19 +85,21 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
     (e: React.KeyboardEvent, route: string) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        navigateTo(route);
+        triggerScrollNavigation(route);
       }
     },
-    [navigateTo]
+    [triggerScrollNavigation]
   );
 
-  // Intentional scroll navigation on desktop
+  // Intentional scroll down on desktop moves the window into the target page
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
-      // Only enable intentional scroll navigation on desktop pointer devices
-      if (typeof window === "undefined") return;
+      if (typeof window === "undefined" || isNavigatingRef.current) return;
       const isFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-      if (!isFinePointer || !activeRegion || isNavigatingRef.current) return;
+      if (!isFinePointer) return;
+
+      // Only scroll down (deltaY > 0) navigates down into the page
+      if (e.deltaY <= 0) return;
 
       accumulatedWheelRef.current += e.deltaY;
 
@@ -70,21 +111,34 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
         accumulatedWheelRef.current = 0;
       }, 250);
 
-      if (Math.abs(accumulatedWheelRef.current) >= LAYOUT_CONFIG.scrollNav.wheelThreshold) {
+      if (accumulatedWheelRef.current >= LAYOUT_CONFIG.scrollNav.wheelThreshold) {
         accumulatedWheelRef.current = 0;
+
+        let targetRoute: string = ROUTES.experience;
         if (activeRegion === "build") {
-          navigateTo(ROUTES.build);
+          targetRoute = ROUTES.build;
         } else if (activeRegion === "about") {
-          navigateTo(ROUTES.about);
+          targetRoute = ROUTES.about;
         } else if (activeRegion === "center") {
-          navigateTo(ROUTES.experience);
+          targetRoute = ROUTES.experience;
+        } else {
+          // Cursor position fallback
+          const width = window.innerWidth;
+          if (e.clientX < width * 0.35) {
+            targetRoute = ROUTES.build;
+          } else if (e.clientX > width * 0.65) {
+            targetRoute = ROUTES.about;
+          } else {
+            targetRoute = ROUTES.experience;
+          }
         }
+
+        triggerScrollNavigation(targetRoute);
       }
     },
-    [activeRegion, navigateTo]
+    [activeRegion, triggerScrollNavigation]
   );
 
-  // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (wheelResetTimeoutRef.current) {
@@ -93,9 +147,7 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
     };
   }, []);
 
-  // Compute dynamic widths for desktop:
-  // Center NEVER expands (always remains fixed at 40%).
-  // Side hover expands that side by sideExpansion (3%), compressing the other side to 27%.
+  // Panel widths
   const { leftNormal, centerNormal, rightNormal, sideExpansion } =
     LAYOUT_CONFIG.desktopWidths;
 
@@ -114,57 +166,100 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
   return (
     <div
       onWheel={handleWheel}
-      className="relative w-full h-[calc(100svh-var(--navbar-height))] overflow-hidden flex flex-col md:flex-row bg-background select-none"
+      className="relative w-full h-[calc(100svh-var(--navbar-height))] overflow-hidden bg-background select-none"
     >
-      {/* Left Region — BUILD (Desktop ~30%) */}
-      <section
+      {/* Sliding Window Container */}
+      <div
         style={{
-          flexBasis: isDesktop ? `${leftWidth}%` : undefined,
+          transform: isScrollingDown
+            ? "translate3d(0, -100%, 0)"
+            : "translate3d(0, 0, 0)",
+          transition: "transform 650ms cubic-bezier(0.16, 1, 0.3, 1)",
         }}
-        className="relative h-1/3 md:h-full md:flex-none transition-[flex-basis] duration-500 ease-canvas z-10"
+        className="w-full h-full will-change-transform"
       >
-        <BuildPanel
-          onMouseEnter={() => setActiveRegion("build")}
-          onMouseLeave={() => setActiveRegion((prev) => (prev === "build" ? null : prev))}
-          onClick={() => navigateTo(ROUTES.build)}
-          onKeyDown={(e) => handleKeyDown(e, ROUTES.build)}
-          isHovered={activeRegion === "build"}
-        />
-      </section>
+        {/* Screen 1: The 30/40/30 Continuous Spatial Canvas */}
+        <div className="w-full h-full flex flex-col md:flex-row">
+          {/* Left Region — BUILD (Desktop ~30%) */}
+          <section
+            style={{
+              flexBasis: isDesktop ? `${leftWidth}%` : undefined,
+            }}
+            className="relative h-1/3 md:h-full md:flex-none transition-[flex-basis] duration-500 ease-canvas z-10"
+          >
+            <BuildPanel
+              onMouseEnter={() => setActiveRegion("build")}
+              onMouseLeave={() =>
+                setActiveRegion((prev) => (prev === "build" ? null : prev))
+              }
+              onClick={() => triggerScrollNavigation(ROUTES.build)}
+              onKeyDown={(e) => handleKeyDown(e, ROUTES.build)}
+              isHovered={activeRegion === "build"}
+            />
+          </section>
 
-      {/* Center Region — DOMINIC THOMAS Identity + Canvas (Desktop ~40%, NEVER expands) */}
-      <section
-        style={{
-          flexBasis: isDesktop ? `${centerWidth}%` : undefined,
-        }}
-        className="relative h-1/3 md:h-full md:flex-none flex-1 z-0"
-      >
-        <CenterIdentity
-          onNavigate={() => navigateTo(ROUTES.experience)}
-          onKeyDown={(e) => handleKeyDown(e, ROUTES.experience)}
-          onMouseEnter={() => setActiveRegion("center")}
-          onMouseLeave={() => setActiveRegion((prev) => (prev === "center" ? null : prev))}
-          isHovered={activeRegion === "center"}
+          {/* Center Region — DOMINIC THOMAS Identity + Canvas (Desktop ~40%, NEVER expands) */}
+          <section
+            style={{
+              flexBasis: isDesktop ? `${centerWidth}%` : undefined,
+            }}
+            className="relative h-1/3 md:h-full md:flex-none flex-1 z-0"
+          >
+            <CenterIdentity
+              onNavigate={() => triggerScrollNavigation(ROUTES.experience)}
+              onKeyDown={(e) => handleKeyDown(e, ROUTES.experience)}
+              onMouseEnter={() => setActiveRegion("center")}
+              onMouseLeave={() =>
+                setActiveRegion((prev) => (prev === "center" ? null : prev))
+              }
+              isHovered={activeRegion === "center"}
+            >
+              {children}
+            </CenterIdentity>
+          </section>
+
+          {/* Right Region — ABOUT ME (Desktop ~30%) */}
+          <section
+            style={{
+              flexBasis: isDesktop ? `${rightWidth}%` : undefined,
+            }}
+            className="relative h-1/3 md:h-full md:flex-none transition-[flex-basis] duration-500 ease-canvas z-10"
+          >
+            <AboutPanel
+              onMouseEnter={() => setActiveRegion("about")}
+              onMouseLeave={() =>
+                setActiveRegion((prev) => (prev === "about" ? null : prev))
+              }
+              onClick={() => triggerScrollNavigation(ROUTES.about)}
+              onKeyDown={(e) => handleKeyDown(e, ROUTES.about)}
+              isHovered={activeRegion === "about"}
+            />
+          </section>
+        </div>
+
+        {/* Screen 2: Incoming Target Page (directly below Screen 1) */}
+        <div
+          aria-hidden="true"
+          className="absolute top-full left-0 right-0 w-full h-full flex flex-col items-center justify-center p-8 text-center bg-background border-t border-border-subtle pointer-events-none"
         >
-          {children}
-        </CenterIdentity>
-      </section>
-
-      {/* Right Region — ABOUT ME (Desktop ~30%) */}
-      <section
-        style={{
-          flexBasis: isDesktop ? `${rightWidth}%` : undefined,
-        }}
-        className="relative h-1/3 md:h-full md:flex-none transition-[flex-basis] duration-500 ease-canvas z-10"
-      >
-        <AboutPanel
-          onMouseEnter={() => setActiveRegion("about")}
-          onMouseLeave={() => setActiveRegion((prev) => (prev === "about" ? null : prev))}
-          onClick={() => navigateTo(ROUTES.about)}
-          onKeyDown={(e) => handleKeyDown(e, ROUTES.about)}
-          isHovered={activeRegion === "about"}
-        />
-      </section>
+          <div className="space-y-4 max-w-md">
+            <span className="text-xs font-mono tracking-widest text-accent uppercase">
+              {incomingMeta.badge}
+            </span>
+            <h1 className="text-2xl md:text-3xl font-light tracking-wider uppercase text-foreground">
+              {incomingMeta.title}
+            </h1>
+            <p className="text-sm font-mono text-muted">
+              Under development.
+            </p>
+            <div className="pt-6">
+              <span className="inline-block text-xs font-mono tracking-widest uppercase text-muted underline underline-offset-8">
+                ← Return to Canvas
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
