@@ -35,7 +35,7 @@ export default function CenterIdentity({
 
       {/* Primary Identity Statement */}
       <div className="relative z-10 text-center px-4 pointer-events-none transition-transform duration-500 ease-canvas">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight tracking-widest text-foreground uppercase">
+        <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extralight tracking-widest text-foreground uppercase whitespace-nowrap">
           Dominic Thomas
         </h1>
       </div>
