@@ -8,12 +8,16 @@ interface SubpageLayoutProps {
   badge: string;
   title: string;
   children?: React.ReactNode;
+  contentClassName?: string;
+  containerClassName?: string;
 }
 
 export default function SubpageLayout({
   badge,
   title,
   children,
+  contentClassName,
+  containerClassName,
 }: SubpageLayoutProps) {
   const router = useRouter();
   const [isExiting, setIsExiting] = useState(false);
@@ -59,9 +63,9 @@ export default function SubpageLayout({
           : "translate3d(0, 0, 0)",
         transition: "transform 650ms cubic-bezier(0.16, 1, 0.3, 1)",
       }}
-      className="w-full h-[calc(100svh-var(--navbar-height))] overflow-hidden flex flex-col items-center justify-center p-8 text-center bg-background select-none will-change-transform"
+      className={`w-full min-h-[calc(100svh-var(--navbar-height))] overflow-y-auto md:overflow-hidden flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-center bg-background select-none will-change-transform ${containerClassName || ""}`}
     >
-      <div className="space-y-4 max-w-md">
+      <div className={`space-y-4 w-full flex flex-col items-center ${contentClassName || "max-w-md"}`}>
         <span className="text-xs font-mono tracking-widest text-accent uppercase">
           {badge}
         </span>
