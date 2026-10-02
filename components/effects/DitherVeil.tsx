@@ -260,6 +260,7 @@ uniform sampler2D tNoise;
 uniform sampler2D tDiffused;
 uniform vec2 uResolution;
 uniform vec2 uCover;
+uniform vec2 uCoverOrigin;
 uniform float uLod;
 uniform float uCell;
 uniform int uPattern;
@@ -301,7 +302,7 @@ float engraving(vec2 cell) {
 }
 
 vec2 imageUv(vec2 uv) {
-  return (uv - 0.5) * uCover + 0.5;
+  return (uv - uCoverOrigin) * uCover + uCoverOrigin;
 }
 
 float within(vec2 p) {
@@ -399,6 +400,7 @@ interface DitherVeilSettings {
   reverse: boolean;
   wander: boolean;
   clickBurst: boolean;
+  coverOrigin?: [number, number];
 }
 
 export interface DitherVeilProps {
@@ -420,6 +422,7 @@ export interface DitherVeilProps {
   reverse?: boolean;
   wander?: boolean;
   clickBurst?: boolean;
+  coverOrigin?: [number, number];
   className?: string;
   style?: React.CSSProperties;
 }
@@ -443,6 +446,7 @@ const DitherVeil: React.FC<DitherVeilProps> = ({
   reverse = false,
   wander = false,
   clickBurst = true,
+  coverOrigin = [0.5, 0.5],
   className = '',
   style
 }) => {
@@ -468,7 +472,8 @@ const DitherVeil: React.FC<DitherVeilProps> = ({
       rim,
       reverse,
       wander,
-      clickBurst
+      clickBurst,
+      coverOrigin,
     };
     wakeRef.current();
   });
@@ -539,6 +544,7 @@ const DitherVeil: React.FC<DitherVeilProps> = ({
       tDiffused: { value: diffusedTexture },
       uResolution: { value: [1, 1] },
       uCover: { value: [1, 1] },
+      uCoverOrigin: { value: [0.5, 0.5] },
       uLod: { value: 0 },
       uCell: { value: 3 },
       uPattern: { value: 0 },
@@ -630,8 +636,10 @@ const DitherVeil: React.FC<DitherVeilProps> = ({
       const [mr, mg, mb] = viewUniforms.uMatte.value as [number, number, number];
       samplerContext.fillStyle = `rgb(${mr * 255}, ${mg * 255}, ${mb * 255})`;
       samplerContext.fillRect(0, 0, cols, rows);
-      const sx = (0.5 - 0.5 * cx) * iw;
-      const sy = (0.5 - 0.5 * cy) * ih;
+      const ox = s.coverOrigin ? s.coverOrigin[0] : 0.5;
+      const oy = s.coverOrigin ? s.coverOrigin[1] : 0.5;
+      const sx = (ox - ox * cx) * iw;
+      const sy = ((1.0 - oy) - (1.0 - oy) * cy) * ih;
       const sw = ((cols * cell) / canvas.width) * cx * iw;
       const sh = ((rows * cell) / canvas.height) * cy * ih;
       const x0 = Math.max(sx, 0);
@@ -732,6 +740,7 @@ const DitherVeil: React.FC<DitherVeilProps> = ({
           image.naturalHeight,
           s.fit === 'contain'
         );
+        viewUniforms.uCoverOrigin.value = s.coverOrigin || [0.5, 0.5];
       }
       let patternIndex = ORDERED[s.pattern] ?? 0;
       if (KERNELS[s.pattern]) {

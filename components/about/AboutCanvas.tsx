@@ -11,40 +11,32 @@ export default function AboutCanvas() {
   return (
     <div className="relative w-full h-[calc(100svh-var(--navbar-height))] overflow-hidden flex items-center justify-center select-none bg-background">
       {/* 
-        Background Layer: The 2 Large Semi-Circles on each side of the central Veil
+        Layer 1 (Behind): Flanking Arcs of the Unified Giant Circle
+        Both sides are arcs of the same colossal circle centered at the screen center,
+        which goes off-page in the center.
       */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-        <div className="relative w-full h-full max-w-[1560px] flex items-center justify-between px-2 sm:px-6 md:px-10 lg:px-14">
-          {/* Left Semi-Circle (Sectors 01 - 04) */}
-          <div className="relative w-[min(36vw,440px)] h-[min(84vh,740px)] flex items-center justify-end">
-            <SegmentedHalo
-              side="left"
-              activeSection={activeSection}
-              onSelectSection={setActiveSection}
-              className="w-full h-full"
-            />
-          </div>
-
-          {/* Center Spacer corresponding to the central full-length veil */}
-          <div className="w-[min(46vw,560px)] h-full shrink-0" />
-
-          {/* Right Semi-Circle (Sectors 05 - 08) */}
-          <div className="relative w-[min(36vw,440px)] h-[min(84vh,740px)] flex items-center justify-start">
-            <SegmentedHalo
-              side="right"
-              activeSection={activeSection}
-              onSelectSection={setActiveSection}
-              className="w-full h-full"
-            />
-          </div>
-        </div>
+        <SegmentedHalo
+          activeSection={activeSection}
+          onSelectSection={setActiveSection}
+          className="w-full h-full"
+        />
       </div>
 
       {/* 
-        Center Veil: Takes up the ENTIRE LENGTH of the page!
-        Full height from top to bottom, cutting through the center and splitting the halo.
+        Layer 2 (Center): Full-Length Dither Veil
+        - Takes up the entire length of the page (from bottom to top).
+        - No enclosing boundary box, borders, or rings.
+        - Base starts from the bottom of the page; head is just below the top.
+        - Softly feathered lateral edges seamlessly blend into the canvas space.
       */}
-      <div className="relative z-20 h-full w-[min(46vw,560px)] border-x border-white/12 shadow-[0_0_80px_rgba(0,0,0,0.95),_0_0_35px_rgba(212,155,106,0.18)] ring-1 ring-accent/20 bg-[#0a0a0d] overflow-hidden flex items-center justify-center">
+      <div
+        className="relative z-20 h-full w-[min(54vw,640px)] overflow-hidden flex items-end justify-center pointer-events-auto"
+        style={{
+          maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
+        }}
+      >
         <DitherVeil
           src="https://images.unsplash.com/photo-1737071371043-761e02b1ef95?q=80&w=1400&auto=format&fit=crop"
           pattern="floyd"
@@ -55,7 +47,7 @@ export default function AboutCanvas() {
           paperColor="#d49b6a"
           contrast={1.2}
           brightness={0}
-          revealRadius={240}
+          revealRadius={250}
           softness={0.65}
           linger={1.0}
           rimColor="#d49b6a"
@@ -64,18 +56,9 @@ export default function AboutCanvas() {
           wander={false}
           clickBurst={true}
           fit="cover"
+          coverOrigin={[0.5, 0.0]}
           className="w-full h-full"
         />
-
-        {/* Top/Bottom Vignette Fade & Edge Bezel */}
-        <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_60px_rgba(0,0,0,0.9)] bg-[linear-gradient(to_bottom,rgba(0,0,0,0.75)_0%,transparent_14%,transparent_86%,rgba(0,0,0,0.75)_100%)]" />
-
-        {/* Subtle Tech Badge at Top of the Veil */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-none z-10 px-3 py-1 rounded-full border border-white/10 bg-black/60 backdrop-blur-md">
-          <span className="font-mono text-[9px] text-accent/80 tracking-widest uppercase">
-            [ APERTURE // DITHER VEIL ]
-          </span>
-        </div>
       </div>
 
       {/* Floating Dynamic Telemetry / Section HUD Readout at the bottom */}
@@ -120,7 +103,7 @@ export default function AboutCanvas() {
                 Dominic Thomas · Systems & Interfaces
               </h2>
               <p className="text-xs font-mono text-muted/80 max-w-lg mx-auto line-clamp-2 sm:line-clamp-none">
-                Full-length dither veil flanked by two orbital semi-circle halos. Hover any sector on either side to inspect focus areas, or hover the central veil to reveal color.
+                Continuous dither veil framed by the flanking arcs of an expansive orbital halo. Hover any sector on either side to inspect focus areas, or hover the central veil to reveal color.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1 opacity-70">
                 {ABOUT_SECTIONS.map((s) => (

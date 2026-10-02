@@ -4,196 +4,245 @@ import React from "react";
 import { ABOUT_SECTIONS, AboutSection } from "@/data/aboutSections";
 
 interface SegmentedHaloProps {
-  side: "left" | "right";
   activeSection: AboutSection | null;
   onSelectSection: (section: AboutSection | null) => void;
   className?: string;
 }
 
-const CY = 500;
-const INNER_R = 390;
-const OUTER_R = 440;
+const R_OUTER = 535;
+const R_INNER = 480;
 const GAP_DEG = 2.5;
 
-const polarToCartesian = (cx: number, cy: number, r: number, angleDeg: number) => {
-  const rad = (angleDeg * Math.PI) / 180.0;
+const toRad = (deg: number) => (deg * Math.PI) / 180;
+
+const polarToCartesian = (r: number, deg: number) => {
+  const rad = toRad(deg);
   return {
-    x: cx + r * Math.cos(rad),
-    y: cy + r * Math.sin(rad),
+    x: r * Math.cos(rad),
+    y: r * Math.sin(rad),
   };
 };
 
-const describeSemiArcSector = (
-  cx: number,
-  cy: number,
-  innerR: number,
-  outerR: number,
-  aStart: number,
-  aEnd: number,
-  side: "left" | "right"
+const describeSectorArc = (
+  rIn: number,
+  rOut: number,
+  t1Deg: number,
+  t2Deg: number
 ) => {
-  if (side === "left") {
-    const tStart = 270 - aStart;
-    const tEnd = 270 - aEnd;
-    const p1 = polarToCartesian(cx, cy, outerR, tStart);
-    const p2 = polarToCartesian(cx, cy, outerR, tEnd);
-    const p3 = polarToCartesian(cx, cy, innerR, tEnd);
-    const p4 = polarToCartesian(cx, cy, innerR, tStart);
-    return [
-      `M ${p1.x} ${p1.y}`,
-      `A ${outerR} ${outerR} 0 0 0 ${p2.x} ${p2.y}`,
-      `L ${p3.x} ${p3.y}`,
-      `A ${innerR} ${innerR} 0 0 1 ${p4.x} ${p4.y}`,
-      "Z",
-    ].join(" ");
-  } else {
-    const tStart = 270 + aStart;
-    const tEnd = 270 + aEnd;
-    const p1 = polarToCartesian(cx, cy, outerR, tStart);
-    const p2 = polarToCartesian(cx, cy, outerR, tEnd);
-    const p3 = polarToCartesian(cx, cy, innerR, tEnd);
-    const p4 = polarToCartesian(cx, cy, innerR, tStart);
-    return [
-      `M ${p1.x} ${p1.y}`,
-      `A ${outerR} ${outerR} 0 0 1 ${p2.x} ${p2.y}`,
-      `L ${p3.x} ${p3.y}`,
-      `A ${innerR} ${innerR} 0 0 0 ${p4.x} ${p4.y}`,
-      "Z",
-    ].join(" ");
-  }
+  const p1 = polarToCartesian(rOut, t1Deg);
+  const p2 = polarToCartesian(rOut, t2Deg);
+  const p3 = polarToCartesian(rIn, t2Deg);
+  const p4 = polarToCartesian(rIn, t1Deg);
+
+  return [
+    `M ${p1.x} ${p1.y}`,
+    `A ${rOut} ${rOut} 0 0 1 ${p2.x} ${p2.y}`,
+    `L ${p3.x} ${p3.y}`,
+    `A ${rIn} ${rIn} 0 0 0 ${p4.x} ${p4.y}`,
+    "Z",
+  ].join(" ");
+};
+
+const describeGuidelineArc = (r: number, t1Deg: number, t2Deg: number) => {
+  const p1 = polarToCartesian(r, t1Deg);
+  const p2 = polarToCartesian(r, t2Deg);
+  return `M ${p1.x} ${p1.y} A ${r} ${r} 0 0 1 ${p2.x} ${p2.y}`;
 };
 
 export default function SegmentedHalo({
-  side,
   activeSection,
   onSelectSection,
   className = "",
 }: SegmentedHaloProps) {
-  const isLeft = side === "left";
-  const sections = isLeft ? ABOUT_SECTIONS.slice(0, 4) : ABOUT_SECTIONS.slice(4, 8);
-  const count = sections.length;
-  const sliceDeg = 180 / count; // 45 degrees per sector
+  // Sectors definitions on the single unified circle:
+  // Left Arc: 116° to 244° (spanning the left flank, top to bottom)
+  // Right Arc: -64° to +64° (spanning the right flank, top to bottom)
+  // Center: circle goes off-screen at top and bottom, completely clear in the center
+  const sectorsConfig = [
+    // Left Arc (Sectors 01 - 04, ordered top to bottom)
+    {
+      sec: ABOUT_SECTIONS[0], // 01 SYSTEMS
+      t1: 212 + GAP_DEG / 2,
+      t2: 244 - GAP_DEG / 2,
+      mid: 228,
+    },
+    {
+      sec: ABOUT_SECTIONS[1], // 02 SHADERS
+      t1: 180 + GAP_DEG / 2,
+      t2: 212 - GAP_DEG / 2,
+      mid: 196,
+    },
+    {
+      sec: ABOUT_SECTIONS[2], // 03 INTERFACES
+      t1: 148 + GAP_DEG / 2,
+      t2: 180 - GAP_DEG / 2,
+      mid: 164,
+    },
+    {
+      sec: ABOUT_SECTIONS[3], // 04 AGENTS
+      t1: 116 + GAP_DEG / 2,
+      t2: 148 - GAP_DEG / 2,
+      mid: 132,
+    },
 
-  // Center coordinate:
-  // For Left: chord is at right edge (X = 510) and arch bows left toward X = 0
-  // For Right: chord is at left edge (X = 20) and arch bows right toward X = 530
-  const CX = isLeft ? 510 : 20;
+    // Right Arc (Sectors 05 - 08, ordered top to bottom)
+    {
+      sec: ABOUT_SECTIONS[4], // 05 PERFORMANCE
+      t1: -64 + GAP_DEG / 2,
+      t2: -32 - GAP_DEG / 2,
+      mid: -48,
+    },
+    {
+      sec: ABOUT_SECTIONS[5], // 06 INFRASTRUCTURE
+      t1: -32 + GAP_DEG / 2,
+      t2: 0 - GAP_DEG / 2,
+      mid: -16,
+    },
+    {
+      sec: ABOUT_SECTIONS[6], // 07 PHILOSOPHY
+      t1: 0 + GAP_DEG / 2,
+      t2: 32 - GAP_DEG / 2,
+      mid: 16,
+    },
+    {
+      sec: ABOUT_SECTIONS[7], // 08 RESEARCH
+      t1: 32 + GAP_DEG / 2,
+      t2: 64 - GAP_DEG / 2,
+      mid: 48,
+    },
+  ];
+
+  // Outer Perimeter Ticks
+  const leftTickAngles = Array.from({ length: 43 }).map((_, i) => 116 + i * 3);
+  const rightTickAngles = Array.from({ length: 43 }).map((_, i) => -64 + i * 3);
+  const allTickAngles = [...leftTickAngles, ...rightTickAngles];
 
   return (
     <div
-      className={`relative w-full h-full flex items-center ${
-        isLeft ? "justify-end" : "justify-start"
-      } pointer-events-none select-none ${className}`}
+      className={`relative w-full h-full flex items-center justify-center pointer-events-none select-none ${className}`}
     >
       <svg
-        viewBox="0 0 530 1000"
-        className="w-full h-full overflow-visible"
-        aria-label={`${isLeft ? "Left" : "Right"} Semi-Circle Halo`}
+        viewBox="-800 -500 1600 1000"
+        className="w-full h-full max-w-[1700px] overflow-visible"
+        aria-label="Orbital Halo Arcs of the Unified Circle"
       >
         <defs>
-          <filter id={`halo-glow-${side}`} x="-30%" y="-30%" width="160%" height="160%">
+          <filter id="halo-glow-arc" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="12" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
-          <linearGradient id={`halo-grad-active-${side}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#d49b6a" stopOpacity="0.38" />
-            <stop offset="100%" stopColor="#d49b6a" stopOpacity="0.14" />
+          <linearGradient id="halo-grad-active" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#d49b6a" stopOpacity="0.40" />
+            <stop offset="100%" stopColor="#d49b6a" stopOpacity="0.16" />
           </linearGradient>
-          <linearGradient id={`halo-grad-idle-${side}`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id="halo-grad-idle" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" stopOpacity="0.04" />
             <stop offset="100%" stopColor="#d49b6a" stopOpacity="0.02" />
           </linearGradient>
         </defs>
 
-        {/* Ambient Decorative Guideline Arcs */}
+        {/* Ambient Decorative Guideline Arcs on Left & Right Flanks */}
         <g className="opacity-40">
-          {/* Outer Guideline Arc 1 (dashed) */}
+          {/* Outer Guideline Arcs (dashed) */}
           <path
-            d={`M ${CX} ${CY - 462} A 462 462 0 0 ${isLeft ? 0 : 1} ${CX} ${CY + 462}`}
+            d={describeGuidelineArc(558, 116, 244)}
             fill="none"
-            stroke="rgba(212, 155, 106, 0.25)"
+            stroke="rgba(212, 155, 106, 0.28)"
             strokeWidth="1"
             strokeDasharray="4 8"
           />
-          {/* Outer Guideline Arc 2 (fine solid) */}
           <path
-            d={`M ${CX} ${CY - 475} A 475 475 0 0 ${isLeft ? 0 : 1} ${CX} ${CY + 475}`}
+            d={describeGuidelineArc(558, -64, 64)}
+            fill="none"
+            stroke="rgba(212, 155, 106, 0.28)"
+            strokeWidth="1"
+            strokeDasharray="4 8"
+          />
+
+          {/* Outer Guideline Arcs (fine solid) */}
+          <path
+            d={describeGuidelineArc(570, 116, 244)}
             fill="none"
             stroke="rgba(255, 255, 255, 0.08)"
             strokeWidth="1"
           />
-          {/* Inner Guideline Arc (dashed) */}
           <path
-            d={`M ${CX} ${CY - 380} A 380 380 0 0 ${isLeft ? 0 : 1} ${CX} ${CY + 380}`}
+            d={describeGuidelineArc(570, -64, 64)}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.08)"
+            strokeWidth="1"
+          />
+
+          {/* Inner Guideline Arcs (dashed) */}
+          <path
+            d={describeGuidelineArc(468, 116, 244)}
             fill="none"
             stroke="rgba(212, 155, 106, 0.22)"
             strokeWidth="1"
             strokeDasharray="3 6"
           />
-          {/* Inner Guideline Arc 2 (subtle) */}
           <path
-            d={`M ${CX} ${CY - 354} A 354 354 0 0 ${isLeft ? 0 : 1} ${CX} ${CY + 354}`}
+            d={describeGuidelineArc(468, -64, 64)}
+            fill="none"
+            stroke="rgba(212, 155, 106, 0.22)"
+            strokeWidth="1"
+            strokeDasharray="3 6"
+          />
+
+          {/* Inner Guideline Arcs (subtle) */}
+          <path
+            d={describeGuidelineArc(445, 116, 244)}
             fill="none"
             stroke="rgba(255, 255, 255, 0.06)"
             strokeWidth="1"
             strokeDasharray="2 4"
           />
-          {/* Vertical Chord Datum Line (touches the veil border) */}
-          <line
-            x1={CX}
-            y1={CY - 480}
-            x2={CX}
-            y2={CY + 480}
-            stroke="rgba(212, 155, 106, 0.35)"
+          <path
+            d={describeGuidelineArc(445, -64, 64)}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.06)"
             strokeWidth="1"
-            strokeDasharray="4 6"
+            strokeDasharray="2 4"
           />
         </g>
 
-        {/* Outer Circular Perimeter Ticks (Every 3 degrees = 60 ticks per semi-circle) */}
+        {/* Outer Circular Perimeter Ticks (Every 3 degrees along both arcs) */}
         <g className="opacity-35">
-          {Array.from({ length: 61 }).map((_, k) => {
-            const aDeg = k * 3;
-            const isMajor = aDeg % 45 === 0;
-            const isMid = aDeg % 15 === 0;
-            const r1 = isMajor ? 454 : isMid ? 460 : 465;
-            const r2 = 474;
-            const theta = isLeft ? 270 - aDeg : 270 + aDeg;
-            const p1 = polarToCartesian(CX, CY, r1, theta);
-            const p2 = polarToCartesian(CX, CY, r2, theta);
+          {allTickAngles.map((deg, k) => {
+            const isMajor = Math.abs(deg) % 15 === 0;
+            const r1 = isMajor ? 550 : 558;
+            const r2 = 569;
+            const p1 = polarToCartesian(r1, deg);
+            const p2 = polarToCartesian(r2, deg);
             return (
               <line
-                key={`tick-${side}-${k}`}
+                key={`tick-${k}`}
                 x1={p1.x}
                 y1={p1.y}
                 x2={p2.x}
                 y2={p2.y}
-                stroke={isMajor ? "#d49b6a" : isMid ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.18)"}
-                strokeWidth={isMajor ? 2 : isMid ? 1.2 : 0.8}
+                stroke={isMajor ? "#d49b6a" : "rgba(255,255,255,0.22)"}
+                strokeWidth={isMajor ? 1.8 : 0.9}
               />
             );
           })}
         </g>
 
-        {/* Interactive Halo Arc Sectors for this Semi-Circle */}
+        {/* The 8 Interactive Halo Arc Sectors (4 on Left Arc, 4 on Right Arc) */}
         <g className="pointer-events-auto">
-          {sections.map((sec, i) => {
-            const aStart = i * sliceDeg + GAP_DEG / 2;
-            const aEnd = (i + 1) * sliceDeg - GAP_DEG / 2;
-            const aMid = (aStart + aEnd) / 2;
+          {sectorsConfig.map(({ sec, t1, t2, mid }) => {
             const isHovered = activeSection?.id === sec.id;
 
-            // Radial translation angle
-            const thetaMid = isLeft ? 270 - aMid : 270 + aMid;
-            const rad = (thetaMid * Math.PI) / 180;
-            const expandDist = isHovered ? 16 : 0;
+            // Radial translation outward from circle center (0, 0)
+            const rad = toRad(mid);
+            const expandDist = isHovered ? 18 : 0;
             const dx = Math.cos(rad) * expandDist;
             const dy = Math.sin(rad) * expandDist;
 
             // Label coordinate inside the sector band
-            const labelR = (INNER_R + OUTER_R) / 2;
-            const labelPos = polarToCartesian(CX, CY, labelR, thetaMid);
-            const pathData = describeSemiArcSector(CX, CY, INNER_R, OUTER_R, aStart, aEnd, side);
+            const labelR = (R_INNER + R_OUTER) / 2;
+            const labelPos = polarToCartesian(labelR, mid);
+            const pathData = describeSectorArc(R_INNER, R_OUTER, t1, t2);
 
             return (
               <g
@@ -212,18 +261,18 @@ export default function SegmentedHalo({
                 }}
                 className="cursor-pointer focus:outline-none"
                 style={{
-                  transform: `translate(${dx}px, ${dy}px) scale(${isHovered ? 1.04 : 1})`,
-                  transformOrigin: `${CX}px ${CY}px`,
+                  transform: `translate(${dx}px, ${dy}px) scale(${isHovered ? 1.03 : 1})`,
+                  transformOrigin: "0px 0px",
                   transition: "transform 360ms cubic-bezier(0.16, 1, 0.3, 1), filter 360ms ease",
                   filter: isHovered
-                    ? "drop-shadow(0 0 20px rgba(212, 155, 106, 0.75))"
+                    ? "drop-shadow(0 0 22px rgba(212, 155, 106, 0.75))"
                     : "drop-shadow(0 0 6px rgba(0, 0, 0, 0.6))",
                 }}
               >
                 {/* Arc Sector Background */}
                 <path
                   d={pathData}
-                  fill={isHovered ? `url(#halo-grad-active-${side})` : `url(#halo-grad-idle-${side})`}
+                  fill={isHovered ? "url(#halo-grad-active)" : "url(#halo-grad-idle)"}
                   stroke={isHovered ? "#d49b6a" : "rgba(255, 255, 255, 0.14)"}
                   strokeWidth={isHovered ? 2 : 1}
                   className="transition-colors duration-300"
@@ -232,15 +281,7 @@ export default function SegmentedHalo({
                 {/* Outer Bezel Accent Strip on Hover */}
                 {isHovered && (
                   <path
-                    d={describeSemiArcSector(
-                      CX,
-                      CY,
-                      OUTER_R - 3,
-                      OUTER_R,
-                      aStart + 0.5,
-                      aEnd - 0.5,
-                      side
-                    )}
+                    d={describeSectorArc(R_OUTER - 3.5, R_OUTER, t1 + 0.4, t2 - 0.4)}
                     fill="#d49b6a"
                     opacity={0.95}
                   />
