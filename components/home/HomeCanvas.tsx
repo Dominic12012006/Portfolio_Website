@@ -185,7 +185,9 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
             style={{
               flexBasis: isDesktop ? `${leftWidth}%` : undefined,
             }}
-            className="relative h-1/3 md:h-full md:flex-none transition-[flex-basis] duration-500 ease-canvas z-10"
+            className={`relative h-1/3 md:h-full md:flex-none transition-[flex-basis,z-index] duration-700 ease-canvas ${
+              activeRegion === "build" ? "z-30" : "z-10"
+            }`}
           >
             <BuildPanel
               onMouseEnter={() => setActiveRegion("build")}
@@ -195,15 +197,20 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
               onClick={() => triggerScrollNavigation(ROUTES.build)}
               onKeyDown={(e) => handleKeyDown(e, ROUTES.build)}
               isHovered={activeRegion === "build"}
+              isOvershadowed={activeRegion !== "build"}
             />
           </section>
 
-          {/* Center Region — DOMINIC THOMAS Identity + Canvas (Desktop ~40%, NEVER expands) */}
+          {/* Center Region — DOMINIC THOMAS Identity + Canvas */}
           <section
             style={{
               flexBasis: isDesktop ? `${centerWidth}%` : undefined,
             }}
-            className="relative h-1/3 md:h-full md:flex-none flex-1 z-0"
+            className={`relative h-1/3 md:h-full md:flex-none flex-1 transition-[flex-basis,z-index] duration-700 ease-canvas ${
+              activeRegion === "build" || activeRegion === "about"
+                ? "z-10"
+                : "z-20"
+            }`}
           >
             <CenterIdentity
               onNavigate={() => triggerScrollNavigation(ROUTES.experience)}
@@ -213,6 +220,9 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
                 setActiveRegion((prev) => (prev === "center" ? null : prev))
               }
               isHovered={activeRegion === "center"}
+              isOvershadowed={
+                activeRegion === "build" || activeRegion === "about"
+              }
             >
               {children}
             </CenterIdentity>
@@ -223,7 +233,9 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
             style={{
               flexBasis: isDesktop ? `${rightWidth}%` : undefined,
             }}
-            className="relative h-1/3 md:h-full md:flex-none transition-[flex-basis] duration-500 ease-canvas z-10"
+            className={`relative h-1/3 md:h-full md:flex-none transition-[flex-basis,z-index] duration-700 ease-canvas ${
+              activeRegion === "about" ? "z-30" : "z-10"
+            }`}
           >
             <AboutPanel
               onMouseEnter={() => setActiveRegion("about")}
@@ -233,6 +245,7 @@ export default function HomeCanvas({ children }: HomeCanvasProps) {
               onClick={() => triggerScrollNavigation(ROUTES.about)}
               onKeyDown={(e) => handleKeyDown(e, ROUTES.about)}
               isHovered={activeRegion === "about"}
+              isOvershadowed={activeRegion !== "about"}
             />
           </section>
         </div>

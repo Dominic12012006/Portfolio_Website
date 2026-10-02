@@ -9,8 +9,8 @@ export const LAYOUT_CONFIG = {
     leftNormal: 30,
     centerNormal: 40,
     rightNormal: 30,
-    // Side expansion percentage (2-4% per spec, tuning to 3%)
-    sideExpansion: 3.0,
+    // Side expansion percentage when hovered to become overbearing
+    sideExpansion: 4.5,
   },
 
   // Transition parameters
