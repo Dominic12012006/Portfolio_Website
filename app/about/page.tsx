@@ -6,7 +6,7 @@ export default function AboutPage() {
     <SubpageLayout
       badge="[ Section // About ]"
       title="About Me"
-      contentClassName="max-w-5xl"
+      contentClassName="max-w-6xl"
     >
       <AboutCanvas />
     </SubpageLayout>
