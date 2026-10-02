@@ -9,10 +9,10 @@ export default function AboutCanvas() {
   const [activeSection, setActiveSection] = useState<AboutSection | null>(null);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center select-none pt-2 pb-8">
-      {/* Central Visual Composition: Much larger DitherVeil in middle + Expansive Circular Halo behind it */}
-      <div className="relative w-full max-w-6xl h-[520px] sm:h-[640px] md:h-[780px] lg:h-[880px] flex items-center justify-center">
-        {/* Layer 0 (Behind): Much larger Segmented Circular Halo with 8 expanding sectors */}
+    <div className="relative w-full h-[calc(100svh-var(--navbar-height))] overflow-hidden flex flex-col items-center justify-center select-none">
+      {/* Central Visual Composition: Concentric Thin Halo + Central DitherVeil */}
+      <div className="relative w-[min(64vh,560px)] h-[min(64vh,560px)] -translate-y-8 sm:-translate-y-10 flex items-center justify-center">
+        {/* Layer 0 (Behind): Thin Segmented Circular Halo with 8 expanding sectors */}
         <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
           <SegmentedHalo
             activeSection={activeSection}
@@ -21,8 +21,8 @@ export default function AboutCanvas() {
           />
         </div>
 
-        {/* Layer 1 (Middle): Greatly enlarged Central DitherVeil Aperture */}
-        <div className="relative z-10 w-72 h-72 sm:w-96 sm:h-96 md:w-[480px] md:h-[480px] lg:w-[530px] lg:h-[530px] rounded-full overflow-hidden border border-white/15 shadow-[0_0_120px_rgba(0,0,0,0.95),_0_0_45px_rgba(212,155,106,0.22)] ring-1 ring-accent/30 pointer-events-auto bg-[#0a0a0d] transition-transform duration-500 hover:scale-[1.01]">
+        {/* Layer 1 (Middle): Central DitherVeil Aperture */}
+        <div className="relative z-10 w-[70%] h-[70%] rounded-full overflow-hidden border border-white/15 shadow-[0_0_100px_rgba(0,0,0,0.95),_0_0_35px_rgba(212,155,106,0.22)] ring-1 ring-accent/30 pointer-events-auto bg-[#0a0a0d] transition-transform duration-500 hover:scale-[1.01]">
           <DitherVeil
             src="https://images.unsplash.com/photo-1737071371043-761e02b1ef95?q=80&w=1400&auto=format&fit=crop"
             pattern="floyd"
@@ -50,31 +50,31 @@ export default function AboutCanvas() {
         </div>
       </div>
 
-      {/* Dynamic Telemetry / Section HUD Readout */}
-      <div className="w-full max-w-3xl mt-4 px-4">
-        <div className="rounded-2xl border border-white/10 bg-surface/50 backdrop-blur-md p-5 md:p-6 text-center transition-all duration-300 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+      {/* Floating Dynamic Telemetry / Section HUD Readout at the bottom */}
+      <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-20 w-[calc(100%-2rem)] max-w-2xl px-2 pointer-events-none">
+        <div className="pointer-events-auto rounded-2xl border border-white/12 bg-background/85 backdrop-blur-xl p-3.5 sm:p-4 md:p-5 text-center shadow-[0_8px_32px_rgba(0,0,0,0.85),_0_0_20px_rgba(212,155,106,0.12)] transition-all duration-300">
           {activeSection ? (
-            <div className="space-y-2.5 animate-fadeIn">
-              <div className="flex items-center justify-center gap-3">
-                <span className="font-mono text-xs text-accent tracking-widest uppercase">
+            <div className="space-y-1 sm:space-y-1.5 animate-fadeIn">
+              <div className="flex items-center justify-center gap-2">
+                <span className="font-mono text-[10px] text-accent tracking-widest uppercase">
                   {activeSection.coordinate}
                 </span>
                 <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               </div>
-              <h2 className="text-xl md:text-2xl font-light tracking-wide text-foreground uppercase">
+              <h2 className="text-base sm:text-lg font-light tracking-wide text-foreground uppercase">
                 {activeSection.title}
               </h2>
-              <p className="text-xs md:text-sm font-mono text-accent/90 italic max-w-lg mx-auto">
+              <p className="text-xs font-mono text-accent/90 italic max-w-lg mx-auto line-clamp-1 sm:line-clamp-none">
                 {activeSection.tagline}
               </p>
-              <p className="text-xs md:text-sm text-muted leading-relaxed max-w-xl mx-auto pt-1">
+              <p className="text-xs text-muted/90 leading-relaxed max-w-xl mx-auto pt-0.5 hidden sm:block">
                 {activeSection.description}
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2">
+              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
                 {activeSection.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[10px] font-mono px-2.5 py-1 rounded-full border border-accent/20 bg-accent/5 text-accent/90"
+                    className="text-[9px] font-mono px-2 py-0.5 rounded-full border border-accent/25 bg-accent/10 text-accent"
                   >
                     #{tag}
                   </span>
@@ -82,24 +82,27 @@ export default function AboutCanvas() {
               </div>
             </div>
           ) : (
-            <div className="space-y-2 text-muted">
-              <span className="font-mono text-[11px] tracking-widest text-accent uppercase">
-                [ HALO ARRAY // HOVER ANY ARC SECTOR TO EXPAND & INSPECT ]
-              </span>
-              <h2 className="text-lg md:text-xl font-light tracking-wide text-foreground uppercase">
-                Dominic Thomas
+            <div className="space-y-1 text-muted">
+              <div className="flex items-center justify-center gap-2">
+                <span className="font-mono text-[10px] tracking-widest text-accent uppercase">
+                  [ HALO ARRAY // HOVER ANY ARC SECTOR TO INSPECT ]
+                </span>
+              </div>
+              <h2 className="text-sm sm:text-base font-light tracking-wide text-foreground uppercase">
+                Dominic Thomas · Systems & Interfaces
               </h2>
-              <p className="text-xs font-mono text-muted/80 max-w-md mx-auto">
-                Expansive dither veil centered within an 8-segment orbital halo. Hover over any sector above to examine specific engineering dimensions, or hover the center veil to reveal its underlying color.
+              <p className="text-xs font-mono text-muted/80 max-w-lg mx-auto line-clamp-2 sm:line-clamp-none">
+                Expansive dither veil framed by an 8-segment orbital halo. Hover any outer sector to inspect focus areas, or hover the center veil to reveal color.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-2 pt-2 opacity-60">
-                {ABOUT_SECTIONS.slice(0, 4).map((s) => (
-                  <span
+              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1 opacity-70">
+                {ABOUT_SECTIONS.map((s) => (
+                  <button
                     key={s.id}
-                    className="text-[10px] font-mono px-2 py-0.5 rounded border border-white/5 bg-white/[0.02]"
+                    onClick={() => setActiveSection(s)}
+                    className="text-[9px] font-mono px-2 py-0.5 rounded border border-white/10 bg-white/[0.03] hover:border-accent/40 hover:text-accent transition-colors"
                   >
-                    {s.index} {s.title}
-                  </span>
+                    {s.index} {s.shortCode}
+                  </button>
                 ))}
               </div>
             </div>

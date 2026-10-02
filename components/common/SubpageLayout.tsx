@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "@/data/routes";
 
 interface SubpageLayoutProps {
-  badge: string;
-  title: string;
+  badge?: string;
+  title?: string;
   children?: React.ReactNode;
   contentClassName?: string;
   containerClassName?: string;
+  hideHeader?: boolean;
+  hideFooter?: boolean;
 }
 
 export default function SubpageLayout({
@@ -18,6 +20,8 @@ export default function SubpageLayout({
   children,
   contentClassName,
   containerClassName,
+  hideHeader = false,
+  hideFooter = false,
 }: SubpageLayoutProps) {
   const router = useRouter();
   const [isExiting, setIsExiting] = useState(false);
@@ -63,15 +67,34 @@ export default function SubpageLayout({
           : "translate3d(0, 0, 0)",
         transition: "transform 650ms cubic-bezier(0.16, 1, 0.3, 1)",
       }}
-      className={`w-full min-h-[calc(100svh-var(--navbar-height))] overflow-y-auto md:overflow-hidden flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-center bg-background select-none will-change-transform ${containerClassName || ""}`}
+      className={`relative w-full min-h-[calc(100svh-var(--navbar-height))] overflow-y-auto md:overflow-hidden flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-center bg-background select-none will-change-transform ${containerClassName || ""}`}
     >
+      {hideFooter && (
+        <button
+          onClick={returnToCanvas}
+          aria-label="Return to Canvas"
+          className="absolute top-4 left-4 sm:top-6 sm:left-6 z-30 inline-flex items-center gap-1.5 text-xs font-mono tracking-widest uppercase text-muted hover:text-accent transition-colors px-3 py-1.5 rounded-full border border-white/10 bg-background/60 backdrop-blur-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+        >
+          <span>←</span>
+          <span>Canvas</span>
+        </button>
+      )}
+
       <div className={`space-y-4 w-full flex flex-col items-center ${contentClassName || "max-w-md"}`}>
-        <span className="text-xs font-mono tracking-widest text-accent uppercase">
-          {badge}
-        </span>
-        <h1 className="text-2xl md:text-3xl font-light tracking-wider uppercase text-foreground">
-          {title}
-        </h1>
+        {!hideHeader && (
+          <>
+            {badge && (
+              <span className="text-xs font-mono tracking-widest text-accent uppercase">
+                {badge}
+              </span>
+            )}
+            {title && (
+              <h1 className="text-2xl md:text-3xl font-light tracking-wider uppercase text-foreground">
+                {title}
+              </h1>
+            )}
+          </>
+        )}
         {children ? (
           children
         ) : (
@@ -79,14 +102,16 @@ export default function SubpageLayout({
             Under development.
           </p>
         )}
-        <div className="pt-6">
-          <button
-            onClick={returnToCanvas}
-            className="inline-block text-xs font-mono tracking-widest uppercase text-muted hover:text-accent transition-colors underline underline-offset-8 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
-          >
-            ← Return to Canvas
-          </button>
-        </div>
+        {!hideFooter && (
+          <div className="pt-6">
+            <button
+              onClick={returnToCanvas}
+              className="inline-block text-xs font-mono tracking-widest uppercase text-muted hover:text-accent transition-colors underline underline-offset-8 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent"
+            >
+              ← Return to Canvas
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

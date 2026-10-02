@@ -11,7 +11,7 @@ interface SegmentedHaloProps {
 
 const CX = 500;
 const CY = 500;
-const INNER_R = 285;
+const INNER_R = 390;
 const OUTER_R = 440;
 const GAP_DEG = 3.0;
 
@@ -97,7 +97,7 @@ export default function SegmentedHalo({
           </linearGradient>
         </defs>
 
-        {/* Ambient Decorative Outer Guideline Rings */}
+        {/* Ambient Decorative Guideline Rings */}
         <g className="opacity-40">
           <circle
             cx={CX}
@@ -119,11 +119,20 @@ export default function SegmentedHalo({
           <circle
             cx={CX}
             cy={CY}
-            r={268}
+            r={380}
             fill="none"
             stroke="rgba(212, 155, 106, 0.22)"
             strokeWidth="1"
             strokeDasharray="3 6"
+          />
+          <circle
+            cx={CX}
+            cy={CY}
+            r={354}
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.06)"
+            strokeWidth="1"
+            strokeDasharray="2 4"
           />
         </g>
 
@@ -151,7 +160,7 @@ export default function SegmentedHalo({
           })}
         </g>
 
-        {/* The 8 Interactive Halo Arc Sectors */}
+        {/* The 8 Interactive Halo Arc Sectors (Thin High-Tech Band) */}
         <g className="pointer-events-auto">
           {ABOUT_SECTIONS.map((sec, i) => {
             const startAngle = i * sliceDeg + GAP_DEG / 2;
@@ -159,13 +168,13 @@ export default function SegmentedHalo({
             const midAngle = (startAngle + endAngle) / 2;
             const isHovered = activeSection?.id === sec.id;
 
-            // Compute radial translation when expanded slightly (24px outwards!)
+            // Compute radial translation when expanded slightly (16px outwards on hover)
             const rad = ((midAngle - 90) * Math.PI) / 180;
-            const expandDist = isHovered ? 24 : 0;
+            const expandDist = isHovered ? 16 : 0;
             const dx = Math.cos(rad) * expandDist;
             const dy = Math.sin(rad) * expandDist;
 
-            // Label coordinate placed comfortably inside the wider arc band
+            // Label coordinate placed comfortably inside the thinner arc band
             const labelR = (INNER_R + OUTER_R) / 2;
             const labelPos = polarToCartesian(CX, CY, labelR, midAngle);
             const pathData = describeArcSector(CX, CY, INNER_R, OUTER_R, startAngle, endAngle);
@@ -187,12 +196,12 @@ export default function SegmentedHalo({
                 }}
                 className="cursor-pointer focus:outline-none"
                 style={{
-                  transform: `translate(${dx}px, ${dy}px) scale(${isHovered ? 1.05 : 1})`,
+                  transform: `translate(${dx}px, ${dy}px) scale(${isHovered ? 1.04 : 1})`,
                   transformOrigin: `${CX}px ${CY}px`,
                   transition: "transform 360ms cubic-bezier(0.16, 1, 0.3, 1), filter 360ms ease",
                   filter: isHovered
-                    ? "drop-shadow(0 0 24px rgba(212, 155, 106, 0.75))"
-                    : "drop-shadow(0 0 8px rgba(0, 0, 0, 0.6))",
+                    ? "drop-shadow(0 0 20px rgba(212, 155, 106, 0.75))"
+                    : "drop-shadow(0 0 6px rgba(0, 0, 0, 0.6))",
                 }}
               >
                 {/* Arc Sector Background */}
@@ -200,14 +209,14 @@ export default function SegmentedHalo({
                   d={pathData}
                   fill={isHovered ? "url(#halo-grad-active)" : "url(#halo-grad-idle)"}
                   stroke={isHovered ? "#d49b6a" : "rgba(255, 255, 255, 0.14)"}
-                  strokeWidth={isHovered ? 2.5 : 1}
+                  strokeWidth={isHovered ? 2 : 1}
                   className="transition-colors duration-300"
                 />
 
                 {/* Outer Bezel Accent Strip on Hover */}
                 {isHovered && (
                   <path
-                    d={describeArcSector(CX, CY, OUTER_R - 4, OUTER_R, startAngle + 0.5, endAngle - 0.5)}
+                    d={describeArcSector(CX, CY, OUTER_R - 3, OUTER_R, startAngle + 0.5, endAngle - 0.5)}
                     fill="#d49b6a"
                     opacity={0.95}
                   />
@@ -222,30 +231,20 @@ export default function SegmentedHalo({
                 >
                   <circle
                     cx="0"
-                    cy="-14"
-                    r={isHovered ? 4 : 2.5}
-                    fill={isHovered ? "#d49b6a" : "rgba(255,255,255,0.4)"}
+                    cy="-7"
+                    r={isHovered ? 3.5 : 2}
+                    fill={isHovered ? "#d49b6a" : "rgba(255,255,255,0.45)"}
                     className="transition-all duration-300"
                   />
                   <text
                     x="0"
-                    y="4"
+                    y="7"
                     textAnchor="middle"
-                    className={`font-mono text-xs tracking-widest uppercase transition-colors duration-300 ${
-                      isHovered ? "fill-accent font-bold" : "fill-foreground/70 font-medium"
+                    className={`font-mono text-[9.5px] tracking-wider uppercase transition-colors duration-300 ${
+                      isHovered ? "fill-accent font-bold" : "fill-foreground/75 font-medium"
                     }`}
                   >
-                    {sec.index}
-                  </text>
-                  <text
-                    x="0"
-                    y="20"
-                    textAnchor="middle"
-                    className={`font-mono text-[9px] tracking-widest uppercase transition-colors duration-300 ${
-                      isHovered ? "fill-accent font-semibold opacity-100" : "fill-muted opacity-65"
-                    }`}
-                  >
-                    {sec.title.split(" ")[0]}
+                    {sec.index} · {sec.shortCode}
                   </text>
                 </g>
               </g>

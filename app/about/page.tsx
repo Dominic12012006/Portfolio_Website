@@ -4,9 +4,10 @@ import AboutCanvas from "@/components/about/AboutCanvas";
 export default function AboutPage() {
   return (
     <SubpageLayout
-      badge="[ Section // About ]"
-      title="About Me"
-      contentClassName="max-w-6xl"
+      hideHeader
+      hideFooter
+      containerClassName="h-[calc(100svh-var(--navbar-height))] max-h-[calc(100svh-var(--navbar-height))] overflow-hidden p-0"
+      contentClassName="w-full h-full max-w-none p-0 space-y-0"
     >
       <AboutCanvas />
     </SubpageLayout>

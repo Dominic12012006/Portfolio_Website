@@ -1,6 +1,7 @@
 export interface AboutSection {
   id: string;
   index: string;
+  shortCode: string;
   title: string;
   tagline: string;
   description: string;
@@ -12,6 +13,7 @@ export const ABOUT_SECTIONS: AboutSection[] = [
   {
     id: "architecture",
     index: "01",
+    shortCode: "SYSTEMS",
     title: "Systems & Architecture",
     tagline: "Distributed foundations, deterministic pipelines & clean abstractions.",
     description:
@@ -22,6 +24,7 @@ export const ABOUT_SECTIONS: AboutSection[] = [
   {
     id: "computation",
     index: "02",
+    shortCode: "SHADERS",
     title: "Creative Computation",
     tagline: "Shaders, procedural synthesis & GPU-accelerated graphics.",
     description:
@@ -32,6 +35,7 @@ export const ABOUT_SECTIONS: AboutSection[] = [
   {
     id: "interfaces",
     index: "03",
+    shortCode: "INTERFACES",
     title: "Spatial & Kinetic UI",
     tagline: "Sub-pixel tactile feedback, micro-gestures & spatial composition.",
     description:
@@ -42,6 +46,7 @@ export const ABOUT_SECTIONS: AboutSection[] = [
   {
     id: "autonomy",
     index: "04",
+    shortCode: "AGENTS",
     title: "Intelligent Agents",
     tagline: "Autonomous workflows, structured inference & deterministic tool use.",
     description:
@@ -52,6 +57,7 @@ export const ABOUT_SECTIONS: AboutSection[] = [
   {
     id: "performance",
     index: "05",
+    shortCode: "PERFORMANCE",
     title: "Precision & Performance",
     tagline: "Zero bundle waste, 60fps rendering budgets & low-latency execution.",
     description:
@@ -62,6 +68,7 @@ export const ABOUT_SECTIONS: AboutSection[] = [
   {
     id: "infrastructure",
     index: "06",
+    shortCode: "INFRASTRUCTURE",
     title: "Cloud & Edge Runtimes",
     tagline: "Global edge computing, containerization & autonomous deployment.",
     description:
@@ -72,6 +79,7 @@ export const ABOUT_SECTIONS: AboutSection[] = [
   {
     id: "philosophy",
     index: "07",
+    shortCode: "PHILOSOPHY",
     title: "Digital Discipline",
     tagline: "Minimalism over noise. Subtraction over accumulation.",
     description:
@@ -82,6 +90,7 @@ export const ABOUT_SECTIONS: AboutSection[] = [
   {
     id: "exploration",
     index: "08",
+    shortCode: "RESEARCH",
     title: "Research & Curiosity",
     tagline: "Continuous experimentation with emerging web standards.",
     description:
