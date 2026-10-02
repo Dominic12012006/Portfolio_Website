@@ -65,8 +65,10 @@ export default function CenterIdentity({
           text="DOMINIC THOMAS"
           fontFamily=""
           fontWeight={700}
-          fontSize={110}
-          letterSpacing={-0.03}
+          fontSize={105}
+          letterSpacing={-0.02}
+          emphasisChars={['D', 'T']}
+          emphasisScale={1.32}
           color="#f4f4f6"
           accentColor="#d49b6a"
           reveal="letter"
@@ -76,12 +78,12 @@ export default function CenterIdentity({
           dashGap={2}
           strokeWidth={1.5}
           lineStyle="dashed"
-          specks={15}
+          specks={14}
           selection={true}
           labels={true}
           draggable={true}
           sweep={true}
-          speed={0.9}
+          speed={0.22}
           onClick={onNavigate}
         />
       </div>

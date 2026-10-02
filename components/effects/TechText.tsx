@@ -57,6 +57,8 @@ interface TechTextSettings {
   draggable: boolean;
   sweep: boolean;
   speed: number;
+  emphasisChars?: string[];
+  emphasisScale?: number;
 }
 
 interface GlyphBox {
@@ -75,6 +77,7 @@ interface SpriteResult {
 interface Glyph {
   char: string;
   x: number;
+  size: number;
   box: GlyphBox;
   offset: { x: number; y: number };
   velocity: { x: number; y: number };
@@ -114,6 +117,8 @@ export interface TechTextProps {
   draggable?: boolean;
   sweep?: boolean;
   speed?: number;
+  emphasisChars?: string[];
+  emphasisScale?: number;
   className?: string;
   style?: React.CSSProperties;
   onClick?: () => void;
@@ -140,6 +145,8 @@ const TechText: React.FC<TechTextProps> = ({
   draggable = true,
   sweep = true,
   speed = 1,
+  emphasisChars = ['D', 'T'],
+  emphasisScale = 1.32,
   className = '',
   style,
   onClick
@@ -175,7 +182,9 @@ const TechText: React.FC<TechTextProps> = ({
       labels,
       draggable,
       sweep,
-      speed
+      speed,
+      emphasisChars,
+      emphasisScale
     };
     wakeRef.current();
   });
@@ -221,13 +230,18 @@ const TechText: React.FC<TechTextProps> = ({
     const setFont = (target: CanvasRenderingContext2D, s: TechTextSettings, size: number) => {
       target.font = fontFor(s, size);
       if ('letterSpacing' in target) {
-        target.letterSpacing = `${s.letterSpacing * size}px`;
+        target.letterSpacing = '0px';
       }
       target.textAlign = 'left';
       target.textBaseline = 'alphabetic';
     };
 
-    const sprite = (s: TechTextSettings, view: WordLayout, glyph: { char: string; x: number; box: GlyphBox }, stroke: boolean): SpriteResult => {
+    const sprite = (
+      s: TechTextSettings,
+      view: WordLayout,
+      glyph: { char: string; x: number; size: number; box: GlyphBox },
+      stroke: boolean
+    ): SpriteResult => {
       const pad = Math.ceil(s.strokeWidth * 2 + 4);
       const left = glyph.box.x1 - pad;
       const top = glyph.box.y1 - pad;
@@ -239,7 +253,7 @@ const TechText: React.FC<TechTextProps> = ({
       const c = image.getContext('2d');
       if (!c) return { image, left, top };
       c.setTransform(dpr, 0, 0, dpr, -left * dpr, -top * dpr);
-      setFont(c, s, view.size);
+      setFont(c, s, glyph.size);
       if (stroke) {
         c.lineJoin = 'round';
         c.lineWidth = s.strokeWidth * 2;
@@ -260,6 +274,8 @@ const TechText: React.FC<TechTextProps> = ({
     };
 
     const ensureLayout = (s: TechTextSettings) => {
+      const emphasisList = s.emphasisChars ?? ['D', 'T'];
+      const emphasisScale = s.emphasisScale ?? 1.32;
       const key = [
         s.text,
         family(s),
@@ -271,6 +287,8 @@ const TechText: React.FC<TechTextProps> = ({
         s.dashGap,
         s.strokeWidth,
         s.lineStyle,
+        emphasisScale,
+        emphasisList.join(','),
         width,
         height,
         dpr
@@ -284,53 +302,107 @@ const TechText: React.FC<TechTextProps> = ({
       }
 
       const probe = scratchCtx;
-      setFont(probe, s, s.fontSize);
-      let m = probe.measureText(s.text);
+      const chars = Array.from(s.text);
+      const isEmphasisChar = (char: string) =>
+        emphasisList.includes(char) || emphasisList.includes(char.toUpperCase());
+
+      // Measure unscaled total ink size to determine fit ratio
+      let totalWidth = 0;
+      let maxAscent = 0;
+      let maxDescent = 0;
+
+      chars.forEach(char => {
+        const scale = isEmphasisChar(char) ? emphasisScale : 1.0;
+        const charSize = s.fontSize * scale;
+        setFont(probe, s, charSize);
+        const m = probe.measureText(char);
+        const spacing = char === ' ' ? 0 : s.letterSpacing * charSize;
+        totalWidth += m.width + spacing;
+        const asc = m.actualBoundingBoxAscent || charSize * 0.72;
+        const desc = m.actualBoundingBoxDescent || charSize * 0.18;
+        if (asc > maxAscent) maxAscent = asc;
+        if (desc > maxDescent) maxDescent = desc;
+      });
+
       const fit = Math.min(
         1,
-        (width * 0.9) / Math.max(m.actualBoundingBoxLeft + m.actualBoundingBoxRight, 1),
-        (height * 0.66) / Math.max(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent, 1)
+        (width * 0.9) / Math.max(totalWidth, 1),
+        (height * 0.66) / Math.max(maxAscent + maxDescent, 1)
       );
-      const size = s.fontSize * fit;
-      setFont(probe, s, size);
-      m = probe.measureText(s.text);
-      const inkWidth = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
-      const inkHeight = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
-      const x = (width - inkWidth) / 2 + m.actualBoundingBoxLeft;
-      const baseline = (height - inkHeight) / 2 + m.actualBoundingBoxAscent;
+      const baseSize = s.fontSize * fit;
+
+      // Measure scaled dimensions with baseSize
+      let inkWidth = 0;
+      maxAscent = 0;
+      maxDescent = 0;
+
+      chars.forEach(char => {
+        const scale = isEmphasisChar(char) ? emphasisScale : 1.0;
+        const charSize = baseSize * scale;
+        setFont(probe, s, charSize);
+        const m = probe.measureText(char);
+        const spacing = char === ' ' ? 0 : s.letterSpacing * charSize;
+        inkWidth += m.width + spacing;
+        const asc = m.actualBoundingBoxAscent || charSize * 0.72;
+        const desc = m.actualBoundingBoxDescent || charSize * 0.18;
+        if (asc > maxAscent) maxAscent = asc;
+        if (desc > maxDescent) maxDescent = desc;
+      });
+
+      const x = (width - inkWidth) / 2;
+      const baseline = (height - (maxAscent + maxDescent)) / 2 + maxAscent;
       const next: WordLayout = {
-        size,
+        size: baseSize,
         baseline,
-        left: x - m.actualBoundingBoxLeft,
-        right: x + m.actualBoundingBoxRight,
-        top: baseline - m.actualBoundingBoxAscent,
-        bottom: baseline + m.actualBoundingBoxDescent
+        left: x,
+        right: x + inkWidth,
+        top: baseline - maxAscent,
+        bottom: baseline + maxDescent
       };
       word = next;
 
-      const chars = Array.from(s.text);
       const previous = glyphs;
       glyphs = [];
-      let prefix = '';
+      let currentX = x;
+
       chars.forEach((char, i) => {
-        prefix += char;
+        const scale = isEmphasisChar(char) ? emphasisScale : 1.0;
+        const charSize = baseSize * scale;
+        setFont(probe, s, charSize);
         const own = probe.measureText(char);
-        const gx = x + probe.measureText(prefix).width - own.width;
+        const gx = currentX;
+        const spacing = char === ' ' ? 0 : s.letterSpacing * charSize;
+        currentX += own.width + spacing;
+
         if (!char.trim()) return;
+
+        const bbLeft = typeof own.actualBoundingBoxLeft === 'number' ? own.actualBoundingBoxLeft : 0;
+        const bbRight = typeof own.actualBoundingBoxRight === 'number' ? own.actualBoundingBoxRight : own.width;
+        const bbAscent =
+          typeof own.actualBoundingBoxAscent === 'number' && own.actualBoundingBoxAscent > 0
+            ? own.actualBoundingBoxAscent
+            : charSize * 0.72;
+        const bbDescent =
+          typeof own.actualBoundingBoxDescent === 'number' && own.actualBoundingBoxDescent > 0
+            ? own.actualBoundingBoxDescent
+            : charSize * 0.18;
+
         const base = {
           char,
           x: gx,
+          size: charSize,
           box: {
-            x1: gx - own.actualBoundingBoxLeft,
-            y1: baseline - own.actualBoundingBoxAscent,
-            x2: gx + own.actualBoundingBoxRight,
-            y2: baseline + own.actualBoundingBoxDescent
+            x1: gx - bbLeft,
+            y1: baseline - bbAscent,
+            x2: gx + bbRight,
+            y2: baseline + bbDescent
           }
         };
-        const kept = previous[glyphs.length];
+
+        const kept = previous.find(p => p.index === i && p.char === char);
         glyphs.push({
           ...base,
-          offset: kept?.char === char ? kept.offset : { x: 0, y: 0 },
+          offset: kept ? kept.offset : { x: 0, y: 0 },
           velocity: { x: 0, y: 0 },
           outline: 0,
           index: i,
@@ -470,7 +542,7 @@ const TechText: React.FC<TechTextProps> = ({
       }
 
       for (let j = 0; j < 2; j++) {
-        const head = (pulse * 0.42 * s.speed + j * 0.5) * perimeter;
+        const head = (pulse * 0.3 * s.speed + j * 0.5) * perimeter;
         for (let i = 0; i < 4; i++) {
           const [x, y] = perimeterPoint(head - i * 6, w, h);
           const size = i === 0 ? 3 : 2;
@@ -553,7 +625,7 @@ const TechText: React.FC<TechTextProps> = ({
 
       const sweeping = s.sweep && !reducedMotion && !pointer.inside && dragging < 0;
       if (sweeping) clock += dt * s.speed;
-      pulse += dt;
+      pulse += dt * 0.7;
       let targetX = pointer.x;
       let targetY = pointer.y;
       if (sweeping) {
@@ -566,7 +638,7 @@ const TechText: React.FC<TechTextProps> = ({
         lens.y = targetY;
       }
       if (active) {
-        const lag = pointer.inside ? 0.05 : 0.22;
+        const lag = pointer.inside ? 0.05 : 0.32;
         lens.x = approach(lens.x, targetX, dt, lag);
         lens.y = approach(lens.y, targetY, dt, lag);
       }
@@ -611,18 +683,18 @@ const TechText: React.FC<TechTextProps> = ({
           frame.x2 = bx2;
           frame.y2 = by2;
         }
-        const glide = focus === dragging ? 0.02 : 0.08;
+        const glide = focus === dragging ? 0.02 : 0.14;
         frame.x1 = approach(frame.x1, bx1, dt, glide);
         frame.y1 = approach(frame.y1, by1, dt, glide);
         frame.x2 = approach(frame.x2, bx2, dt, glide);
         frame.y2 = approach(frame.y2, by2, dt, glide);
         frame.index = focus;
       }
-      frame.alpha = approach(frame.alpha, focus >= 0 && s.selection ? 1 : 0, dt, 0.1);
+      frame.alpha = approach(frame.alpha, focus >= 0 && s.selection ? 1 : 0, dt, 0.14);
 
       glyphs.forEach((glyph, i) => {
         const target = s.reveal === 'letter' && i === focus && i !== dragging ? 1 : 0;
-        glyph.outline = approach(glyph.outline, target, dt, 0.09);
+        glyph.outline = approach(glyph.outline, target, dt, 0.12);
         if (Math.abs(glyph.outline - target) > 0.002) moving = true;
         else glyph.outline = target;
       });
