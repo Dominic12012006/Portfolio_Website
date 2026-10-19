@@ -38,7 +38,7 @@ export default function AboutCanvas() {
         }}
       >
         <DitherVeil
-          src="https://images.unsplash.com/photo-1737071371043-761e02b1ef95?q=80&w=1400&auto=format&fit=crop"
+          src="/images/about/portrait-green-kurta.png"
           pattern="floyd"
           pixelSize={2}
           levels={2}

@@ -4,7 +4,15 @@ import React, { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle, Texture, RenderTarget } from 'ogl';
 import './DitherVeil.css';
 
-const DEFAULT_SRC = 'https://images.unsplash.com/photo-1737071371043-761e02b1ef95?q=80&w=1400&auto=format&fit=crop';
+const DEFAULT_SRC = '/images/about/portrait-green-kurta.png';
+
+const resolveSrc = (path: string): string => {
+  if (!path) return DEFAULT_SRC;
+  if (path.includes('Smiling Night Portrait in Green Kurta.png') || path.includes('portrait-green-kurta')) {
+    return '/images/about/portrait-green-kurta.png';
+  }
+  return path;
+};
 
 const ORDERED: Record<string, number> = { bayer: 0, noise: 1, lines: 2 };
 
@@ -807,7 +815,7 @@ const DitherVeil: React.FC<DitherVeilProps> = ({
       introStart = performance.now();
       wake();
     };
-    img.src = src;
+    img.src = resolveSrc(src);
 
     const locate = (e: PointerEvent) => {
       const rect = container.getBoundingClientRect();
