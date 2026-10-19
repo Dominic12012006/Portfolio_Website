@@ -1,0 +1,435 @@
+# TASK: Refine the About Page Layout and Implement Expandable Sector Popups
+
+Inspect the existing portfolio project and improve the About page so that it feels
+clean, intentional, and professionally designed.
+
+The current page has:
+- A central dithered portrait.
+- An orbital halo with eight interactive sectors.
+- Sector labels and hover descriptions positioned around the portrait.
+- A central information card containing my name, introduction, and sector buttons.
+- Existing hover and click interactions.
+
+The current result feels cluttered because the sector headings and descriptions
+compete for attention, some text overlaps other elements, and the central information
+card obscures too much of the portrait.
+
+I want to preserve the existing concept while improving its execution.
+
+IMPORTANT:
+Do not replace the design with a generic portfolio template.
+Do not remove the dithered portrait or orbital halo.
+Do not change the overall visual identity.
+Reuse the existing components, styles, assets, and interaction logic wherever possible.
+
+This task involves layout refinement and interaction changes, not a complete redesign.
+
+--------------------------------------------------
+1. FIX THE VISUAL HIERARCHY
+--------------------------------------------------
+
+The visual hierarchy should be:
+
+1. Central portrait.
+2. Eight orbital sectors.
+3. Sector labels and brief hover descriptions.
+4. Central identity information.
+5. Detailed content, visible only when a sector is opened.
+
+The portrait should remain the main focal point.
+
+The surrounding sectors should feel like an organized interface rather than eight
+text blocks competing with the portrait.
+
+Avoid unnecessary visual noise.
+
+Preserve the existing dark background, monochrome portrait, subtle orange accents,
+technical typography, and orbital aesthetic.
+
+--------------------------------------------------
+2. CLEAN UP THE ORBITAL SECTOR LABELS
+--------------------------------------------------
+
+There are eight sectors surrounding the portrait.
+
+Currently, the sector headings and their descriptions occupy too much horizontal
+space and sometimes overlap the portrait, halo, or other labels.
+
+Refine their presentation.
+
+Requirements:
+
+- Maintain eight sectors.
+- Preserve their existing numbering and content.
+- Keep sector labels short and scannable.
+- Use a consistent typographic hierarchy.
+- Keep the descriptions substantially shorter than the headings.
+- Ensure that labels do not overlap one another.
+- Ensure that labels do not collide with the portrait or central card.
+- Maintain consistent alignment and spacing between corresponding left and right
+  sector elements.
+- Keep the labels visually associated with their corresponding orbital sectors.
+- Use the existing hover behavior to reveal additional information.
+
+Use these short sector labels:
+
+01 SYSTEMS
+02 AI / ML
+03 BUILDING
+04 OWNERSHIP
+05 ENGINEERING
+06 MILESTONES
+07 BEYOND CODE
+08 CURIOSITY
+
+Do not permanently display long headings such as
+"01 // SYSTEMS — THINKING IN SYSTEMS".
+
+The main visible label should communicate the category, not repeat its description.
+
+If the current implementation supports an expanded hover state, show the longer
+heading or a brief description only when the user hovers over the corresponding
+sector.
+
+Keep hover content to approximately one short line.
+
+Do not introduce additional always-visible paragraphs around the portrait.
+
+--------------------------------------------------
+3. MAKE HOVER STATES LESS CLUTTERED
+--------------------------------------------------
+
+The existing hover interaction should remain.
+
+When the user hovers over a sector:
+
+- Highlight its corresponding orbital segment.
+- Expand the sector label subtly.
+- Reveal a short descriptive phrase.
+- Keep the remaining sectors visually subdued but readable.
+- Avoid shifting the positions of neighboring labels.
+- Prevent the expanded label from colliding with other elements.
+
+Use the existing animation and transition mechanisms.
+
+Do not introduce exaggerated movement, bouncing, scaling, or additional decorative
+effects.
+
+The interface should feel precise and controlled.
+
+When the pointer leaves a sector, restore its normal state smoothly.
+
+Ensure that hovering over the sector label and hovering over its corresponding
+orbital segment activate the same sector.
+
+--------------------------------------------------
+4. REDUCE THE CENTRAL CARD'S VISUAL WEIGHT
+--------------------------------------------------
+
+The current central information card is too large and obscures a substantial part
+of the portrait.
+
+Refine its existing presentation.
+
+Requirements:
+
+- Preserve my name and introductory description.
+- Keep the central card visually subordinate to the portrait.
+- Reduce unnecessary spacing and excessive content density.
+- Avoid displaying long descriptions permanently.
+- Preserve the existing sector navigation if it remains useful.
+- Ensure that the card does not collide with the orbital labels.
+- Avoid introducing a second layer of competing navigation.
+
+The central card should contain:
+
+DOMINIC THOMAS
+
+AI / ML · SYSTEMS · ENGINEERING
+
+"I enjoy building intelligent systems, exploring unfamiliar technologies, and
+bringing complex ideas into working reality."
+
+Keep the central introduction concise.
+
+Do not display the complete About biography in the central card.
+
+If the current implementation uses a shared component for the sector buttons,
+preserve its functionality unless a change is necessary to eliminate duplication
+with the orbital navigation.
+
+Do not remove useful functionality merely to reduce visual clutter.
+
+The portrait should remain substantially visible behind and above the card.
+
+--------------------------------------------------
+5. CHANGE CLICK BEHAVIOR: OPEN A PROPER POPUP
+--------------------------------------------------
+
+This is a mandatory interaction change.
+
+CURRENT BEHAVIOR:
+Clicking a sector changes the content inside the central information card.
+
+DESIRED BEHAVIOR:
+Clicking a sector should open a dedicated popup or modal containing the detailed
+information for that sector.
+
+The central information card must not be repurposed to display the full sector
+description.
+
+The detailed content should appear in a separate foreground layer.
+
+### Popup appearance
+
+Create the popup using the existing design language:
+
+- Dark, near-black background.
+- Subtle transparency if appropriate.
+- Thin, understated border.
+- Existing typography.
+- Restrained orange accents.
+- Clear title and readable body text.
+- A visible close control.
+- Optional small sector number or category label.
+
+The popup should feel like an expanded version of the selected sector, not an
+unrelated generic dialog.
+
+It should be large enough to read comfortably but should not occupy the entire
+screen unnecessarily.
+
+Use a responsive maximum width and appropriate internal padding.
+
+Long content must remain readable without overflowing the viewport.
+
+### Background treatment
+
+When the popup opens:
+
+1. Keep the existing About page in the background.
+2. Apply a translucent dark overlay.
+3. Blur the background moderately using a backdrop-blur effect.
+4. Keep the portrait and orbital interface faintly visible through the overlay.
+5. Make the popup the clear visual focal point.
+
+The background should remain recognizable but should no longer compete with the
+popup content.
+
+Use a smooth, restrained entrance transition consistent with the existing site.
+
+Avoid excessive blur that makes the page feel visually muddy.
+
+### Popup content
+
+Each sector should open its own corresponding content.
+
+Use the detailed descriptions already provided in the About-section content data.
+
+Do not replace them with generic text.
+
+The popup should contain:
+
+- Sector number and category.
+- A clear title.
+- The corresponding detailed description.
+- Relevant achievements or structured details, where applicable.
+- A close button.
+
+Preserve any existing content structure that supports paragraphs, tags, or
+achievement lists.
+
+Do not introduce unnecessary images or decorative elements.
+
+### Closing behavior
+
+The popup must close when:
+
+- The close button is clicked.
+- The Escape key is pressed.
+- The user clicks the backdrop outside the popup.
+
+Clicking inside the popup must not close it.
+
+Prevent clicks from propagating from the popup content to the backdrop.
+
+When the popup closes, restore the About page to its previous state.
+
+The selected sector may remain subtly highlighted until the user moves to another
+sector or dismisses the interaction, provided this does not conflict with the
+existing interaction model.
+
+### Accessibility
+
+Implement the popup as an accessible modal dialog.
+
+Where appropriate:
+
+- Give it an accessible title.
+- Move keyboard focus into the dialog when it opens.
+- Keep keyboard focus inside the dialog while it is open.
+- Restore focus to the triggering sector when it closes.
+- Support keyboard dismissal with Escape.
+- Ensure the close control has an accessible label.
+- Prevent interaction with background content while the modal is open.
+
+Use the project's existing accessibility patterns or dialog library if one is
+already available.
+
+Do not install a new dependency unless necessary.
+
+--------------------------------------------------
+6. MAKE THE POPUP FEEL CONNECTED TO THE ORBITAL INTERFACE
+--------------------------------------------------
+
+The popup should visually relate to the sector that opened it.
+
+Use the selected sector's number and category as its identity.
+
+For example, clicking sector 03 should display:
+
+03 / BUILDING
+
+LEARNING BY BUILDING
+
+[Detailed description for the Building sector]
+
+Clicking sector 06 should display:
+
+06 / MILESTONES
+
+MILESTONES
+
+[Relevant achievements]
+
+Use the corresponding existing content for every sector.
+
+Do not make all eight sectors open the same content.
+
+Do not force the popup to be positioned directly over the clicked sector if doing
+so would make it difficult to read.
+
+A centered popup with a subtle connection to the selected sector is preferable
+to a popup that causes layout collisions.
+
+Do not introduce a complicated animation system solely to create this connection.
+
+--------------------------------------------------
+7. RESPONSIVE BEHAVIOR
+--------------------------------------------------
+
+The current interface is designed around a wide desktop viewport.
+
+Ensure that the refinements remain usable at smaller screen sizes.
+
+Desktop:
+- Preserve the orbital composition.
+- Keep labels organized around the portrait.
+- Prevent overlapping text.
+- Keep the central card compact.
+
+Tablet:
+- Adjust sector spacing and typography as needed.
+- Prevent the labels from colliding with the portrait.
+- Preserve access to all eight sectors.
+
+Mobile:
+- Do not force eight long labels into a narrow viewport.
+- Preserve access to every sector.
+- Allow shorter labels and compact interaction states.
+- Ensure that the portrait remains recognizable.
+- Ensure that the popup fits within the viewport.
+- Allow popup content to scroll when necessary.
+
+Use responsive adjustments within the existing layout system.
+
+Do not create an entirely separate mobile design unless the existing implementation
+requires it.
+
+--------------------------------------------------
+8. IMPLEMENTATION CONSTRAINTS
+--------------------------------------------------
+
+Before changing the code, inspect the existing implementation.
+
+Identify:
+- The About page component.
+- The orbital sector components.
+- The existing hover handlers.
+- The current click behavior.
+- The central information card.
+- The sector content data.
+- The project's existing modal or dialog utilities, if any.
+
+Prefer targeted modifications over rewriting components.
+
+Keep the sector content in a centralized data structure where practical.
+
+Ensure that each sector's label, hover description, and popup content remain
+associated with the same sector.
+
+Avoid duplicating content or creating competing sources of truth.
+
+Do not modify the Home, Experience, or Socials sections.
+
+Do not change the portrait asset or its dither effect.
+
+Do not remove existing functionality unrelated to this task.
+
+Do not add new dependencies unnecessarily.
+
+--------------------------------------------------
+9. VALIDATION
+--------------------------------------------------
+
+After implementation, verify the following:
+
+[ ] The portrait remains the main focal point.
+[ ] The eight sector labels are organized and readable.
+[ ] The labels do not overlap one another.
+[ ] Hovering over a sector reveals a concise description.
+[ ] Hovering over a label or its orbital segment activates the same sector.
+[ ] The central card contains only the concise introduction.
+[ ] Clicking a sector opens a separate popup.
+[ ] The popup displays the correct sector-specific content.
+[ ] The background becomes darker and moderately blurred.
+[ ] The popup remains readable and does not overflow.
+[ ] Clicking inside the popup does not close it.
+[ ] Clicking outside the popup closes it.
+[ ] The close button works.
+[ ] Escape closes the popup.
+[ ] Keyboard focus behaves appropriately.
+[ ] The page returns to its previous state after closing the popup.
+[ ] All eight sectors work correctly.
+[ ] The interface remains usable on desktop, tablet, and mobile.
+[ ] The other portfolio sections remain unchanged.
+
+If browser testing is available, test the actual interactions rather than relying
+only on source-code inspection.
+
+Fix any regressions introduced by the changes.
+
+--------------------------------------------------
+10. FINAL EXPECTED RESULT
+--------------------------------------------------
+
+The About page should feel like a refined, interactive engineering interface.
+
+The portrait should be immediately recognizable.
+
+The eight orbital sectors should be easy to scan without competing for attention.
+
+Hovering should provide small amounts of contextual information.
+
+Clicking should open a dedicated, readable popup with a blurred background and
+the detailed content for the selected sector.
+
+The central card should remain concise and should never become the container
+for the full sector descriptions.
+
+Preserve the established aesthetic and existing working functionality.
+
+Make only the changes necessary to achieve these objectives.
+
+When finished, report which files were changed and confirm that the popup,
+hover, keyboard, and responsive behaviors were tested.

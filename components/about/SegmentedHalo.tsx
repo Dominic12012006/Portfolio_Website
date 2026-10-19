@@ -4,8 +4,11 @@ import React from "react";
 import { ABOUT_SECTIONS, AboutSection } from "@/data/aboutSections";
 
 interface SegmentedHaloProps {
-  activeSection: AboutSection | null;
-  onSelectSection: (section: AboutSection | null) => void;
+  hoveredSection?: AboutSection | null;
+  activeSection?: AboutSection | null;
+  onHoverSection?: (section: AboutSection | null) => void;
+  onOpenSection?: (section: AboutSection) => void;
+  onSelectSection?: (section: AboutSection | null) => void;
   className?: string;
 }
 
@@ -69,10 +72,17 @@ const describeHorizontalLane = (
 };
 
 export default function SegmentedHalo({
+  hoveredSection,
   activeSection,
+  onHoverSection,
+  onOpenSection,
   onSelectSection,
   className = "",
 }: SegmentedHaloProps) {
+  const currentHover = hoveredSection !== undefined ? hoveredSection : activeSection ?? null;
+  const handleHover = onHoverSection ?? onSelectSection ?? (() => {});
+  const handleOpen = onOpenSection ?? onSelectSection ?? (() => {});
+
   // Sectors definitions on the single unified circle:
   // Left Arc: 116° to 244° (spanning the left flank, top to bottom)
   // Right Arc: -64° to +64° (spanning the right flank, top to bottom)
@@ -277,7 +287,7 @@ export default function SegmentedHalo({
         */}
         <g className="pointer-events-auto">
           {sectorsConfig.map(({ sec, t1, t2, mid, isLeft }) => {
-            const isHovered = activeSection?.id === sec.id;
+            const isHovered = currentHover?.id === sec.id;
 
             // Radial translation outward from circle center (0, 0) for the arc
             const rad = toRad(mid);
@@ -301,23 +311,23 @@ export default function SegmentedHalo({
             return (
               <g
                 key={sec.id}
-                onMouseEnter={() => onSelectSection(sec)}
-                onMouseLeave={() => onSelectSection(null)}
-                onClick={() => onSelectSection(isHovered ? null : sec)}
+                onMouseEnter={() => handleHover(sec)}
+                onMouseLeave={() => handleHover(null)}
+                onClick={() => handleOpen(sec)}
                 tabIndex={0}
                 role="button"
-                aria-label={`Explore ${sec.index} ${sec.title}`}
+                aria-label={`Open details for ${sec.index} ${sec.shortCode}`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    onSelectSection(isHovered ? null : sec);
+                    handleOpen(sec);
                   }
                 }}
                 className="cursor-pointer focus:outline-none group"
               >
                 {/* 
                   1. The Extended Horizontal Section (Away from Center to Screen Edge)
-                  Selecting anywhere in this horizontal lane activates the tag!
+                  Selecting anywhere in this horizontal lane activates the sector!
                 */}
                 <path
                   d={lanePath}
@@ -331,10 +341,6 @@ export default function SegmentedHalo({
                   className="transition-all duration-300"
                 />
 
-                {/* 
-                  2. Horizontal Technical Projection Beam
-                  Projects horizontally outward from the arc to the screen edge.
-                */}
                 {/* 
                   2. Horizontal Technical Projection Beam
                   Projects horizontally outward from the arc to the screen edge.
@@ -367,31 +373,29 @@ export default function SegmentedHalo({
                     className="transition-colors duration-300"
                   />
 
-                  {/* Outer Technical Label Readout in the Horizontal Section (Always visible, prominent font) */}
+                  {/* Outer Technical Label Readout (Short scannable label always visible; tagline reveals on hover) */}
                   <text
                     x={labelX}
-                    y={pOuterMid.y + dy - 10}
+                    y={pOuterMid.y + dy - 2}
                     textAnchor={isLeft ? "start" : "end"}
-                    className={`font-mono text-[14px] sm:text-[15px] tracking-wider uppercase transition-all duration-300 ${
+                    className={`font-mono text-[13px] sm:text-[14px] tracking-wider uppercase transition-all duration-300 ${
                       isHovered
                         ? "fill-accent font-bold drop-shadow-[0_0_10px_rgba(212,155,106,0.9)]"
-                        : "fill-foreground font-semibold drop-shadow-[0_0_6px_rgba(0,0,0,0.9)]"
+                        : "fill-foreground/80 font-semibold drop-shadow-[0_0_4px_rgba(0,0,0,0.8)]"
                     }`}
                   >
-                    {`${sec.index} // ${sec.shortCode} — ${sec.title}`}
+                    {`${sec.index} ${sec.shortCode}`}
                   </text>
-                  <text
-                    x={labelX}
-                    y={pOuterMid.y + dy + 16}
-                    textAnchor={isLeft ? "start" : "end"}
-                    className={`font-mono text-[11px] sm:text-[12px] tracking-wide transition-all duration-300 ${
-                      isHovered
-                        ? "fill-accent/95 font-medium"
-                        : "fill-muted font-normal drop-shadow-[0_0_4px_rgba(0,0,0,0.8)]"
-                    }`}
-                  >
-                    {sec.tagline}
-                  </text>
+                  {isHovered && (
+                    <text
+                      x={labelX}
+                      y={pOuterMid.y + dy + 18}
+                      textAnchor={isLeft ? "start" : "end"}
+                      className="font-mono text-[11px] sm:text-[12px] tracking-wide fill-accent/95 font-medium animate-fadeIn drop-shadow-[0_0_4px_rgba(0,0,0,0.8)]"
+                    >
+                      {sec.tagline}
+                    </text>
+                  )}
                 </g>
 
                 {/* 
