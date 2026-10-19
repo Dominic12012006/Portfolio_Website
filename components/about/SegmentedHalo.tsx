@@ -163,8 +163,8 @@ export default function SegmentedHalo({
             <stop offset="100%" stopColor="#d49b6a" stopOpacity="0.16" />
           </linearGradient>
           <linearGradient id="halo-grad-idle" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.04" />
-            <stop offset="100%" stopColor="#d49b6a" stopOpacity="0.02" />
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.09" />
+            <stop offset="100%" stopColor="#d49b6a" stopOpacity="0.07" />
           </linearGradient>
 
           {/* Left Lane Active Highlight (from outer screen edge to arc) */}
@@ -335,58 +335,62 @@ export default function SegmentedHalo({
                   2. Horizontal Technical Projection Beam
                   Projects horizontally outward from the arc to the screen edge.
                 */}
+                {/* 
+                  2. Horizontal Technical Projection Beam
+                  Projects horizontally outward from the arc to the screen edge.
+                */}
                 <g className="pointer-events-none transition-all duration-300">
                   <line
                     x1={pOuterMid.x + dx}
                     y1={pOuterMid.y + dy}
                     x2={beamEndX}
                     y2={pOuterMid.y + dy}
-                    stroke={isHovered ? "#d49b6a" : "rgba(255, 255, 255, 0.12)"}
-                    strokeWidth={isHovered ? 1.5 : 1}
-                    strokeDasharray={isHovered ? "none" : "3 6"}
+                    stroke={isHovered ? "#d49b6a" : "rgba(212, 155, 106, 0.45)"}
+                    strokeWidth={isHovered ? 2.5 : 1.5}
+                    strokeDasharray={isHovered ? "none" : "4 6"}
                     className="transition-colors duration-300"
                     style={{
                       filter: isHovered
-                        ? "drop-shadow(0 0 6px rgba(212, 155, 106, 0.6))"
-                        : "none",
+                        ? "drop-shadow(0 0 8px rgba(212, 155, 106, 0.8))"
+                        : "drop-shadow(0 0 2px rgba(0, 0, 0, 0.6))",
                     }}
                   />
 
                   {/* Outer Technical Terminal Bracket & Crosshair Tick */}
                   <line
                     x1={beamEndX}
-                    y1={pOuterMid.y + dy - 12}
+                    y1={pOuterMid.y + dy - 18}
                     x2={beamEndX}
-                    y2={pOuterMid.y + dy + 12}
-                    stroke={isHovered ? "#d49b6a" : "rgba(255, 255, 255, 0.16)"}
-                    strokeWidth={isHovered ? 2 : 1}
+                    y2={pOuterMid.y + dy + 22}
+                    stroke={isHovered ? "#d49b6a" : "rgba(212, 155, 106, 0.6)"}
+                    strokeWidth={isHovered ? 3 : 2}
                     className="transition-colors duration-300"
                   />
 
-                  {/* Outer Technical Label Readout in the Horizontal Section */}
+                  {/* Outer Technical Label Readout in the Horizontal Section (Always visible, prominent font) */}
                   <text
                     x={labelX}
-                    y={pOuterMid.y + dy - 8}
+                    y={pOuterMid.y + dy - 10}
                     textAnchor={isLeft ? "start" : "end"}
-                    className={`font-mono text-[11px] tracking-widest uppercase transition-all duration-300 ${
+                    className={`font-mono text-[14px] sm:text-[15px] tracking-wider uppercase transition-all duration-300 ${
                       isHovered
-                        ? "fill-accent font-bold drop-shadow-[0_0_8px_rgba(212,155,106,0.6)]"
-                        : "fill-foreground/55 font-medium"
+                        ? "fill-accent font-bold drop-shadow-[0_0_10px_rgba(212,155,106,0.9)]"
+                        : "fill-foreground font-semibold drop-shadow-[0_0_6px_rgba(0,0,0,0.9)]"
                     }`}
                   >
-                    {`${sec.index} // ${sec.shortCode}`}
+                    {`${sec.index} // ${sec.shortCode} — ${sec.title}`}
                   </text>
                   <text
                     x={labelX}
-                    y={pOuterMid.y + dy + 14}
+                    y={pOuterMid.y + dy + 16}
                     textAnchor={isLeft ? "start" : "end"}
-                    className={`font-mono text-[9px] tracking-wider uppercase transition-all duration-300 ${
+                    className={`font-mono text-[11px] sm:text-[12px] tracking-wide transition-all duration-300 ${
                       isHovered
-                        ? "fill-foreground/90 font-medium"
-                        : "fill-muted/40 font-normal"
+                        ? "fill-accent/95 font-medium"
+                        : "fill-muted font-normal drop-shadow-[0_0_4px_rgba(0,0,0,0.8)]"
                     }`}
                   >
-                    {isHovered ? sec.tagline : `#{sec.tags[0]} · #{sec.tags[1]}`}
+                    {sec.tagline}
                   </text>
                 </g>
 
@@ -409,8 +413,8 @@ export default function SegmentedHalo({
                   <path
                     d={arcPath}
                     fill={isHovered ? "url(#halo-grad-active)" : "url(#halo-grad-idle)"}
-                    stroke={isHovered ? "#d49b6a" : "rgba(255, 255, 255, 0.14)"}
-                    strokeWidth={isHovered ? 2 : 1}
+                    stroke={isHovered ? "#d49b6a" : "rgba(212, 155, 106, 0.3)"}
+                    strokeWidth={isHovered ? 2.5 : 1.5}
                     className="transition-colors duration-300"
                   />
 
@@ -437,19 +441,19 @@ export default function SegmentedHalo({
                   >
                     <circle
                       cx="0"
-                      cy="-7"
-                      r={isHovered ? 3.5 : 2}
-                      fill={isHovered ? "#d49b6a" : "rgba(255,255,255,0.45)"}
+                      cy="-10"
+                      r={isHovered ? 5 : 3.5}
+                      fill={isHovered ? "#d49b6a" : "rgba(212,155,106,0.85)"}
                       className="transition-all duration-300"
                     />
                     <text
                       x="0"
-                      y="7"
+                      y="10"
                       textAnchor="middle"
-                      className={`font-mono text-[9.5px] tracking-wider uppercase transition-colors duration-300 ${
+                      className={`font-mono text-[13px] tracking-wider uppercase transition-colors duration-300 ${
                         isHovered
-                          ? "fill-accent font-bold"
-                          : "fill-foreground/75 font-medium"
+                          ? "fill-accent font-extrabold drop-shadow-[0_0_8px_rgba(212,155,106,0.9)]"
+                          : "fill-foreground font-bold drop-shadow-[0_0_4px_rgba(0,0,0,0.8)]"
                       }`}
                     >
                       {sec.index} · {sec.shortCode}

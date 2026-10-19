@@ -5,15 +5,6 @@ import DitherVeil from "@/components/effects/DitherVeil";
 import SegmentedHalo from "@/components/about/SegmentedHalo";
 import { ABOUT_SECTIONS, AboutSection } from "@/data/aboutSections";
 
-const CARD_TAGS = [
-  { index: "01", label: "AI / ML", targetCode: "AI / ML" },
-  { index: "02", label: "SYSTEMS", targetCode: "SYSTEMS" },
-  { index: "03", label: "INTELLIGENT APPLICATIONS", targetCode: "BUILDING" },
-  { index: "04", label: "ENGINEERING", targetCode: "ENGINEERING" },
-  { index: "05", label: "RESEARCH", targetCode: "MILESTONES" },
-  { index: "06", label: "EXPLORATION", targetCode: "CURIOSITY" },
-];
-
 export default function AboutCanvas() {
   const [activeSection, setActiveSection] = useState<AboutSection | null>(null);
 
@@ -53,14 +44,14 @@ export default function AboutCanvas() {
           levels={2}
           palette="duotone"
           inkColor="#0a0a0d"
-          paperColor="#d49b6a"
-          contrast={1.2}
+          paperColor="#f2f2f5"
+          contrast={1.25}
           brightness={0}
           revealRadius={250}
           softness={0.65}
           linger={1.0}
-          rimColor="#d49b6a"
-          rim={0.05}
+          rimColor="#ffffff"
+          rim={0.03}
           reverse={false}
           wander={false}
           clickBurst={true}
@@ -71,74 +62,97 @@ export default function AboutCanvas() {
       </div>
 
       {/* Floating Dynamic Telemetry / Section HUD Readout at the bottom */}
-      <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-30 w-[calc(100%-2rem)] max-w-xl px-2 pointer-events-none">
-        <div className="pointer-events-auto rounded-2xl border border-white/12 bg-background/90 backdrop-blur-xl p-3.5 sm:p-4 text-center shadow-[0_8px_32px_rgba(0,0,0,0.9),_0_0_20px_rgba(212,155,106,0.12)] transition-all duration-300">
+      <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-30 w-[calc(100%-2rem)] max-w-2xl sm:max-w-3xl px-2 pointer-events-none">
+        <div className="pointer-events-auto rounded-2xl border border-white/15 bg-background/95 backdrop-blur-2xl p-4 sm:p-5 text-center shadow-[0_12px_40px_rgba(0,0,0,0.95),_0_0_24px_rgba(212,155,106,0.18)] transition-all duration-300">
           {activeSection ? (
-            <div className="space-y-1 sm:space-y-1.5 animate-fadeIn">
+            <div className="space-y-2 sm:space-y-2.5 animate-fadeIn">
               <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] text-accent tracking-widest uppercase">
+                  <span className="font-mono text-xs sm:text-sm text-accent tracking-widest uppercase font-semibold">
                     {activeSection.coordinate}
                   </span>
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                  <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" />
                 </div>
                 <button
                   onClick={() => setActiveSection(null)}
-                  className="font-mono text-[10px] text-muted/60 hover:text-accent uppercase transition-colors px-1.5 py-0.5 rounded border border-white/5 bg-white/[0.02]"
+                  className="font-mono text-xs sm:text-sm text-muted/80 hover:text-accent uppercase transition-colors px-2.5 py-1 rounded-md border border-white/10 bg-white/[0.04]"
                   aria-label="Return to central identity card"
                 >
                   ✕ Close
                 </button>
               </div>
-              <h2 className="text-base sm:text-lg font-light tracking-wide text-foreground uppercase">
+
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-light tracking-wide text-foreground uppercase">
                 {activeSection.title}
               </h2>
-              <p className="text-xs font-mono text-accent/90 italic max-w-lg mx-auto">
+
+              <p className="text-sm sm:text-base font-mono text-accent italic max-w-xl mx-auto">
                 {activeSection.tagline}
               </p>
-              <div className="text-xs text-muted/90 leading-relaxed max-w-xl mx-auto pt-1 max-h-[26vh] overflow-y-auto whitespace-pre-line text-left px-1 sm:px-3">
+
+              <div className="text-sm sm:text-base text-muted/95 leading-relaxed max-w-2xl mx-auto pt-1 max-h-[28vh] overflow-y-auto whitespace-pre-line text-left px-2 sm:px-4">
                 {activeSection.description}
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
+
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
                 {activeSection.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[9px] font-mono px-2 py-0.5 rounded-full border border-accent/25 bg-accent/10 text-accent"
+                    className="text-xs sm:text-sm font-mono px-3 py-1 rounded-full border border-accent/30 bg-accent/10 text-accent font-medium"
                   >
                     #{tag}
                   </span>
                 ))}
               </div>
-            </div>
-          ) : (
-            <div className="space-y-1.5 text-muted animate-fadeIn">
-              <div className="flex items-center justify-center gap-2">
-                <span className="font-mono text-[10px] tracking-widest text-accent uppercase">
-                  AI / ML · SYSTEMS · ENGINEERING
-                </span>
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              </div>
-              <h2 className="text-base sm:text-lg font-light tracking-wide text-foreground uppercase">
-                DOMINIC THOMAS
-              </h2>
-              <p className="text-xs text-muted/90 leading-relaxed max-w-xl mx-auto pt-0.5">
-                I enjoy building intelligent systems, exploring unfamiliar technologies, and bringing complex ideas into working reality. My work spans AI/ML, intelligent applications, software infrastructure, and robotics, united by a simple instinct: understand the problem, figure out what it takes, and build something that works.
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1.5 opacity-80">
-                {CARD_TAGS.map((tag) => {
-                  const targetSec = ABOUT_SECTIONS.find(
-                    (s) => s.shortCode === tag.targetCode
-                  );
+
+              {/* Tab navigation strip always visible */}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-2 border-t border-white/10">
+                {ABOUT_SECTIONS.map((s) => {
+                  const isCurrent = activeSection.id === s.id;
                   return (
                     <button
-                      key={tag.index}
-                      onClick={() => targetSec && setActiveSection(targetSec)}
-                      className="text-[9px] font-mono px-2 py-0.5 rounded border border-white/10 bg-white/[0.03] hover:border-accent/40 hover:text-accent transition-colors"
+                      key={s.id}
+                      onClick={() => setActiveSection(isCurrent ? null : s)}
+                      className={`text-xs sm:text-sm font-mono px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border transition-all font-medium ${
+                        isCurrent
+                          ? "border-accent bg-accent/20 text-accent shadow-[0_0_12px_rgba(212,155,106,0.4)]"
+                          : "border-white/10 bg-white/[0.03] text-foreground/80 hover:border-accent/50 hover:text-accent"
+                      }`}
                     >
-                      {tag.index} {tag.label}
+                      {s.index} {s.shortCode}
                     </button>
                   );
                 })}
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2 sm:space-y-2.5 text-muted animate-fadeIn">
+              <div className="flex items-center justify-center gap-2">
+                <span className="font-mono text-xs sm:text-sm tracking-widest text-accent uppercase font-semibold">
+                  AI / ML · SYSTEMS · ENGINEERING
+                </span>
+                <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" />
+              </div>
+
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-light tracking-wider text-foreground uppercase">
+                DOMINIC THOMAS
+              </h2>
+
+              <p className="text-sm sm:text-base text-muted/95 leading-relaxed max-w-2xl mx-auto pt-0.5">
+                I enjoy building intelligent systems, exploring unfamiliar technologies, and bringing complex ideas into working reality. My work spans AI/ML, intelligent applications, software infrastructure, and robotics, united by a simple instinct: understand the problem, figure out what it takes, and build something that works.
+              </p>
+
+              {/* All 8 Sectors always visible as prominent tabs */}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-2 border-t border-white/10">
+                {ABOUT_SECTIONS.map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setActiveSection(s)}
+                    className="text-xs sm:text-sm font-mono px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-white/10 bg-white/[0.03] hover:border-accent/60 hover:text-accent hover:bg-accent/10 transition-all font-medium text-foreground/85"
+                  >
+                    {s.index} {s.shortCode}
+                  </button>
+                ))}
               </div>
             </div>
           )}
