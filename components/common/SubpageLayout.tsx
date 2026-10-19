@@ -58,6 +58,8 @@ export default function SubpageLayout({
     [returnToCanvas]
   );
 
+  const hasCustomPadding = containerClassName?.includes("p-0");
+
   return (
     <div
       onWheel={handleWheel}
@@ -67,7 +69,7 @@ export default function SubpageLayout({
           : "translate3d(0, 0, 0)",
         transition: "transform 650ms cubic-bezier(0.16, 1, 0.3, 1)",
       }}
-      className={`relative w-full min-h-[calc(100svh-var(--navbar-height))] overflow-y-auto md:overflow-hidden flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-center bg-background select-none will-change-transform ${containerClassName || ""}`}
+      className={`relative w-full min-h-[calc(100svh-var(--navbar-height))] overflow-y-auto md:overflow-hidden flex flex-col items-center justify-center ${hasCustomPadding ? "" : "p-4 sm:p-6 md:p-8"} text-center bg-background select-none will-change-transform ${containerClassName || ""}`}
     >
       {hideFooter && (
         <button
@@ -80,7 +82,7 @@ export default function SubpageLayout({
         </button>
       )}
 
-      <div className={`space-y-4 w-full flex flex-col items-center ${contentClassName || "max-w-md"}`}>
+      <div className={`w-full flex flex-col items-center ${contentClassName || "space-y-4 max-w-md"}`}>
         {!hideHeader && (
           <>
             {badge && (

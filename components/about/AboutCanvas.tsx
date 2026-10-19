@@ -5,6 +5,15 @@ import DitherVeil from "@/components/effects/DitherVeil";
 import SegmentedHalo from "@/components/about/SegmentedHalo";
 import { ABOUT_SECTIONS, AboutSection } from "@/data/aboutSections";
 
+const CARD_TAGS = [
+  { index: "01", label: "AI / ML", targetCode: "AI / ML" },
+  { index: "02", label: "SYSTEMS", targetCode: "SYSTEMS" },
+  { index: "03", label: "INTELLIGENT APPLICATIONS", targetCode: "BUILDING" },
+  { index: "04", label: "ENGINEERING", targetCode: "ENGINEERING" },
+  { index: "05", label: "RESEARCH", targetCode: "MILESTONES" },
+  { index: "06", label: "EXPLORATION", targetCode: "CURIOSITY" },
+];
+
 export default function AboutCanvas() {
   const [activeSection, setActiveSection] = useState<AboutSection | null>(null);
 
@@ -31,7 +40,7 @@ export default function AboutCanvas() {
         - Softly feathered lateral edges seamlessly blend into the canvas space.
       */}
       <div
-        className="relative z-20 h-full w-[min(54vw,640px)] overflow-hidden flex items-end justify-center pointer-events-auto"
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 h-full w-[min(54vw,640px)] overflow-hidden flex items-end justify-center pointer-events-auto"
         style={{
           maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
           WebkitMaskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)",
@@ -66,21 +75,30 @@ export default function AboutCanvas() {
         <div className="pointer-events-auto rounded-2xl border border-white/12 bg-background/90 backdrop-blur-xl p-3.5 sm:p-4 text-center shadow-[0_8px_32px_rgba(0,0,0,0.9),_0_0_20px_rgba(212,155,106,0.12)] transition-all duration-300">
           {activeSection ? (
             <div className="space-y-1 sm:space-y-1.5 animate-fadeIn">
-              <div className="flex items-center justify-center gap-2">
-                <span className="font-mono text-[10px] text-accent tracking-widest uppercase">
-                  {activeSection.coordinate}
-                </span>
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] text-accent tracking-widest uppercase">
+                    {activeSection.coordinate}
+                  </span>
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                </div>
+                <button
+                  onClick={() => setActiveSection(null)}
+                  className="font-mono text-[10px] text-muted/60 hover:text-accent uppercase transition-colors px-1.5 py-0.5 rounded border border-white/5 bg-white/[0.02]"
+                  aria-label="Return to central identity card"
+                >
+                  ✕ Close
+                </button>
               </div>
               <h2 className="text-base sm:text-lg font-light tracking-wide text-foreground uppercase">
                 {activeSection.title}
               </h2>
-              <p className="text-xs font-mono text-accent/90 italic max-w-lg mx-auto line-clamp-1 sm:line-clamp-none">
+              <p className="text-xs font-mono text-accent/90 italic max-w-lg mx-auto">
                 {activeSection.tagline}
               </p>
-              <p className="text-xs text-muted/90 leading-relaxed max-w-xl mx-auto pt-0.5 hidden sm:block">
+              <div className="text-xs text-muted/90 leading-relaxed max-w-xl mx-auto pt-1 max-h-[26vh] overflow-y-auto whitespace-pre-line text-left px-1 sm:px-3">
                 {activeSection.description}
-              </p>
+              </div>
               <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
                 {activeSection.tags.map((tag) => (
                   <span
@@ -93,28 +111,34 @@ export default function AboutCanvas() {
               </div>
             </div>
           ) : (
-            <div className="space-y-1 text-muted">
+            <div className="space-y-1.5 text-muted animate-fadeIn">
               <div className="flex items-center justify-center gap-2">
                 <span className="font-mono text-[10px] tracking-widest text-accent uppercase">
-                  [ HALO ARRAY // HOVER ANY ARC SECTOR TO INSPECT ]
+                  AI / ML · SYSTEMS · ENGINEERING
                 </span>
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               </div>
-              <h2 className="text-sm sm:text-base font-light tracking-wide text-foreground uppercase">
-                Dominic Thomas · Systems & Interfaces
+              <h2 className="text-base sm:text-lg font-light tracking-wide text-foreground uppercase">
+                DOMINIC THOMAS
               </h2>
-              <p className="text-xs font-mono text-muted/80 max-w-lg mx-auto line-clamp-2 sm:line-clamp-none">
-                Continuous dither veil framed by the flanking arcs of an expansive orbital halo. Hover any sector on either side to inspect focus areas, or hover the central veil to reveal color.
+              <p className="text-xs text-muted/90 leading-relaxed max-w-xl mx-auto pt-0.5">
+                I enjoy building intelligent systems, exploring unfamiliar technologies, and bringing complex ideas into working reality. My work spans AI/ML, intelligent applications, software infrastructure, and robotics, united by a simple instinct: understand the problem, figure out what it takes, and build something that works.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1 opacity-70">
-                {ABOUT_SECTIONS.map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setActiveSection(s)}
-                    className="text-[9px] font-mono px-2 py-0.5 rounded border border-white/10 bg-white/[0.03] hover:border-accent/40 hover:text-accent transition-colors"
-                  >
-                    {s.index} {s.shortCode}
-                  </button>
-                ))}
+              <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1.5 opacity-80">
+                {CARD_TAGS.map((tag) => {
+                  const targetSec = ABOUT_SECTIONS.find(
+                    (s) => s.shortCode === tag.targetCode
+                  );
+                  return (
+                    <button
+                      key={tag.index}
+                      onClick={() => targetSec && setActiveSection(targetSec)}
+                      className="text-[9px] font-mono px-2 py-0.5 rounded border border-white/10 bg-white/[0.03] hover:border-accent/40 hover:text-accent transition-colors"
+                    >
+                      {tag.index} {tag.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

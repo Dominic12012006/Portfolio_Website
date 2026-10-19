@@ -6,8 +6,8 @@ export default function AboutPage() {
     <SubpageLayout
       hideHeader
       hideFooter
-      containerClassName="h-[calc(100svh-var(--navbar-height))] max-h-[calc(100svh-var(--navbar-height))] overflow-hidden p-0"
-      contentClassName="w-full h-full max-w-none p-0 space-y-0"
+      containerClassName="h-[calc(100svh-var(--navbar-height))] max-h-[calc(100svh-var(--navbar-height))] overflow-hidden p-0 sm:p-0 md:p-0"
+      contentClassName="w-full h-full max-w-none p-0 sm:p-0 md:p-0 space-y-0"
     >
       <AboutCanvas />
     </SubpageLayout>

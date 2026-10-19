@@ -87,21 +87,21 @@ export default function SegmentedHalo({
       isLeft: true,
     },
     {
-      sec: ABOUT_SECTIONS[1], // 02 SHADERS
+      sec: ABOUT_SECTIONS[1], // 02 AI / ML
       t1: 180 + GAP_DEG / 2,
       t2: 212 - GAP_DEG / 2,
       mid: 196,
       isLeft: true,
     },
     {
-      sec: ABOUT_SECTIONS[2], // 03 INTERFACES
+      sec: ABOUT_SECTIONS[2], // 03 BUILDING
       t1: 148 + GAP_DEG / 2,
       t2: 180 - GAP_DEG / 2,
       mid: 164,
       isLeft: true,
     },
     {
-      sec: ABOUT_SECTIONS[3], // 04 AGENTS
+      sec: ABOUT_SECTIONS[3], // 04 OWNERSHIP
       t1: 116 + GAP_DEG / 2,
       t2: 148 - GAP_DEG / 2,
       mid: 132,
@@ -110,28 +110,28 @@ export default function SegmentedHalo({
 
     // Right Arc (Sectors 05 - 08, ordered top to bottom)
     {
-      sec: ABOUT_SECTIONS[4], // 05 PERFORMANCE
+      sec: ABOUT_SECTIONS[4], // 05 ENGINEERING
       t1: -64 + GAP_DEG / 2,
       t2: -32 - GAP_DEG / 2,
       mid: -48,
       isLeft: false,
     },
     {
-      sec: ABOUT_SECTIONS[5], // 06 INFRASTRUCTURE
+      sec: ABOUT_SECTIONS[5], // 06 MILESTONES
       t1: -32 + GAP_DEG / 2,
       t2: 0 - GAP_DEG / 2,
       mid: -16,
       isLeft: false,
     },
     {
-      sec: ABOUT_SECTIONS[6], // 07 PHILOSOPHY
+      sec: ABOUT_SECTIONS[6], // 07 BEYOND CODE
       t1: 0 + GAP_DEG / 2,
       t2: 32 - GAP_DEG / 2,
       mid: 16,
       isLeft: false,
     },
     {
-      sec: ABOUT_SECTIONS[7], // 08 RESEARCH
+      sec: ABOUT_SECTIONS[7], // 08 CURIOSITY
       t1: 32 + GAP_DEG / 2,
       t2: 64 - GAP_DEG / 2,
       mid: 48,
@@ -374,7 +374,7 @@ export default function SegmentedHalo({
                         : "fill-foreground/55 font-medium"
                     }`}
                   >
-                    {`${sec.index} // ${sec.title}`}
+                    {`${sec.index} // ${sec.shortCode}`}
                   </text>
                   <text
                     x={labelX}
@@ -386,7 +386,7 @@ export default function SegmentedHalo({
                         : "fill-muted/40 font-normal"
                     }`}
                   >
-                    #{sec.tags[0]} · #{sec.tags[1]}
+                    {isHovered ? sec.tagline : `#{sec.tags[0]} · #{sec.tags[1]}`}
                   </text>
                 </g>
 

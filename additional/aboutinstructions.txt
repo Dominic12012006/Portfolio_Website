@@ -1,0 +1,642 @@
+# TASK: Complete the About Section of My Personal Portfolio
+
+## 1. OBJECTIVE
+
+Complete the content of the existing About section of my personal portfolio.
+
+The page already has an established design and interaction system:
+- A central portrait rendered using a dither-veil effect.
+- An orbital halo surrounding the portrait.
+- Eight numbered content sectors positioned around the portrait.
+- Short labels associated with each sector.
+- Existing hover interactions that slightly expand the labels.
+- An information card associated with the central portrait.
+- Existing click interactions that open relevant content.
+
+Your task is to populate the existing placeholders with finalized, meaningful content about me.
+
+IMPORTANT: This is a CONTENT-ONLY task.
+
+Do not redesign the page, change the visual direction, replace the existing interactions,
+or introduce a new layout.
+
+Preserve the existing implementation and work within it.
+
+## 2. FIRST: INSPECT THE EXISTING PROJECT
+
+Before modifying anything:
+
+1. Inspect the repository and identify the implementation of the About section.
+2. Locate the existing content placeholders, data structures, components, and interaction
+   handlers associated with the eight sectors.
+3. Understand how the current implementation handles:
+   - The central information card.
+   - Sector labels.
+   - Hover descriptions.
+   - Click-triggered popups or modal windows.
+   - Sector-specific content.
+4. Determine the existing content schema and populate it rather than creating an
+   unnecessary parallel implementation.
+5. Identify any existing links between the About section and other portfolio sections.
+
+Do not assume that the code follows a particular framework or file structure. Inspect
+the actual project.
+
+If the content is stored in a centralized configuration object, data file, or component
+properties, prefer updating that existing source of truth.
+
+Avoid duplicating content across components when it can be maintained centrally.
+
+## 3. MY PROFESSIONAL IDENTITY
+
+Use the following information as the basis for all About-section content.
+
+Name:
+Dominic Thomas
+
+Education:
+B.Tech. in Computer Science and Engineering, specializing in Artificial Intelligence
+and Machine Learning, at SRM Institute of Science and Technology, Kattankulathur.
+
+Academic performance:
+CGPA: 9.85
+
+Graduation period:
+2023–2027.
+
+Professional interests:
+- Artificial intelligence and machine learning.
+- Large language models and AI agents.
+- Retrieval-augmented generation and intelligent information retrieval.
+- AI application development.
+- Backend engineering and distributed systems.
+- Cloud infrastructure and deployment.
+- Computer vision and edge AI.
+- Robotics and intelligent systems.
+
+My primary professional interests are AI/ML and building intelligent software systems.
+
+However, do not present me as someone interested exclusively in one technical domain.
+
+My experience spans AI, software engineering, cloud infrastructure, automation, computer
+vision, and robotics. The portfolio should communicate that I am comfortable moving
+between disciplines and working on complex systems involving multiple technologies.
+
+Robotics is an important part of my experience, but I am not trying to position myself
+specifically as a robotics-job candidate.
+
+My identity should remain broader than any single specialization.
+
+## 4. THE PERSONALITY THE CONTENT SHOULD COMMUNICATE
+
+The About section should communicate the following characteristics.
+
+### A. Ownership and determination
+
+I care about getting things done.
+
+When I commit to a project, I am willing to invest substantial effort in understanding
+the problem, overcoming obstacles, learning what is necessary, and bringing the system
+to a working state.
+
+I have experience taking ownership of difficult technical work and accepting
+responsibility for whether the overall system succeeds.
+
+This is particularly evident in my robotics leadership experience, where I took on
+substantial technical responsibility to help prepare the team for competition.
+
+Communicate determination without glorifying burnout, sleep deprivation, or
+unsustainable work habits.
+
+### B. Learning through building
+
+I enjoy learning unfamiliar technologies by using them to solve actual problems.
+
+I am particularly interested in building AI systems that do something useful rather
+than treating experimentation and model development as ends in themselves.
+
+I do not claim to be a master of every programming language or technology I use.
+
+My strength is my ability to learn, combine tools, investigate problems, and work toward
+a functional solution, including in unfamiliar technical environments.
+
+Do not describe dependence on development tools as a weakness. Equally, do not
+misrepresent me as an expert in every technology mentioned in my resume.
+
+### C. Systems thinking
+
+I enjoy working on systems in which multiple components must work together.
+
+My experience includes combining language models, retrieval systems, speech pipelines,
+computer vision, backend services, databases, deployment infrastructure, and hardware.
+
+I am interested in the complete path from an initial idea to a working implementation.
+
+### D. Curiosity and exploration
+
+I like experimenting with new technologies and exploring possibilities beyond my
+existing knowledge.
+
+My interests are not confined to a predefined career path or a single technical domain.
+
+### E. Long-term outlook
+
+My long-term aspiration is to contribute to something genuinely useful that solves a
+meaningful problem.
+
+Building a successful product or startup would be exciting, but I do not want the
+portfolio to portray entrepreneurship as my only acceptable future.
+
+I am equally comfortable continuing to grow as an engineer while pursuing personal
+projects and interests outside work.
+
+Do not portray me as a founder, entrepreneur, or startup owner. These are aspirations,
+not established credentials.
+
+## 5. WRITING STYLE
+
+The writing must sound natural, confident, thoughtful, and personal.
+
+Combine:
+- Professional clarity.
+- Technical credibility.
+- A conversational and approachable tone.
+- A small amount of distinctive personality.
+
+Avoid:
+- Generic developer-portfolio language.
+- Excessive self-promotion.
+- Corporate buzzwords.
+- Overly dramatic claims about changing the world.
+- Long paragraphs that merely repeat my resume.
+- Generic statements about being passionate about technology.
+- Describing me as an expert in every field.
+- Making up achievements, motivations, experiences, or personal history.
+- Repeating the same information in multiple sectors.
+
+The page should feel like a personal introduction from an engineer who enjoys building
+complex things, learning continuously, taking ownership, and exploring new ideas.
+
+It should not read like an application for a specific job.
+
+The content must complement the visual interface rather than compete with it.
+
+## 6. CENTRAL INFORMATION CARD
+
+Populate the existing central information card with the following content.
+
+Primary identity:
+DOMINIC THOMAS
+
+Headline:
+AI / ML · SYSTEMS · ENGINEERING
+
+Introductory text:
+
+"I enjoy building intelligent systems, exploring unfamiliar technologies, and bringing
+complex ideas into working reality. My work spans AI/ML, intelligent applications,
+software infrastructure, and robotics, united by a simple instinct: understand the
+problem, figure out what it takes, and build something that works."
+
+The introductory text should fit the existing card.
+
+If the component has separate fields for a title, subtitle, description, or tags, use
+those existing fields.
+
+Do not create additional card elements or change the component's structure.
+
+If the card already supports a limited number of tags, prioritize:
+
+01 AI / ML
+02 SYSTEMS
+03 INTELLIGENT APPLICATIONS
+04 ENGINEERING
+05 RESEARCH
+06 EXPLORATION
+
+Keep the existing tag-rendering behavior intact.
+
+## 7. EIGHT ORBITAL SECTORS
+
+Populate the existing eight sectors with the content defined below.
+
+Each sector must have three content levels:
+
+1. LABEL:
+   A very short title visible in the orbital interface.
+
+2. HOVER CONTENT:
+   A concise description that fits the existing expanding hover element.
+   Aim for approximately 5–12 words.
+   It should provide additional context without turning the hover state into a paragraph.
+
+3. CLICK CONTENT:
+   The fuller explanation displayed by the existing popup or modal interaction.
+
+The popup should provide useful information without becoming a miniature resume.
+
+Keep the writing concise, specific, and distinct across all eight sectors.
+
+Use the existing data schema, interaction handlers, and rendering logic.
+
+### SECTOR 01 — SYSTEMS
+
+Short label:
+SYSTEMS
+
+Hover content:
+Building systems where complex parts work together.
+
+Popup title:
+THINKING IN SYSTEMS
+
+Popup content:
+
+"I enjoy working on problems that cannot be solved by treating every component in
+isolation.
+
+My projects have taken me across AI pipelines, backend services, databases,
+infrastructure, and hardware integrations. I like understanding how these pieces fit
+together, identifying where they fail, and making the complete system work.
+
+For me, the interesting part is often not a single algorithm or component, but the
+engineering required to make everything work reliably together."
+
+Purpose:
+Communicate my systems-oriented approach without listing technologies already
+covered elsewhere.
+
+### SECTOR 02 — INTELLIGENCE
+
+Short label:
+AI / ML
+
+Hover content:
+From language models to useful intelligent applications.
+
+Popup title:
+BUILDING INTELLIGENT SYSTEMS
+
+Popup content:
+
+"My primary technical interest is artificial intelligence and machine learning,
+particularly in applications where models become part of a larger working system.
+
+I have explored language models, retrieval-augmented generation, model fine-tuning,
+speech processing, computer vision, and AI-powered conversational systems.
+
+I enjoy experimenting with different approaches, understanding their limitations,
+and integrating them into applications that solve actual problems.
+
+I am especially interested in the engineering between a model and its real-world
+use: retrieval, orchestration, inference, integration, and deployment."
+
+Purpose:
+Establish AI/ML as my main professional interest without implying that I work
+exclusively in this domain.
+
+### SECTOR 03 — BUILDING
+
+Short label:
+BUILDING
+
+Hover content:
+Turning ideas into working, integrated implementations.
+
+Popup title:
+LEARNING BY BUILDING
+
+Popup content:
+
+"I learn best by building.
+
+Working on unfamiliar problems has repeatedly pushed me to learn new frameworks,
+tools, architectures, and techniques along the way.
+
+I do not approach every project with complete knowledge of the technologies involved.
+Instead, I break the problem down, investigate what I do not understand, experiment
+with possible solutions, and keep working toward a functioning result.
+
+I value the ability to learn, adapt, and execute across technical boundaries.
+
+The goal is not simply to make something look impressive in a demonstration. It is
+to understand enough of the problem to build something that actually works."
+
+Purpose:
+Express my practical approach to learning and problem-solving without claiming
+mastery of every tool or technology.
+
+### SECTOR 04 — OWNERSHIP
+
+Short label:
+OWNERSHIP
+
+Hover content:
+Taking responsibility when the difficult work needs doing.
+
+Popup title:
+OWNERSHIP OVER TITLES
+
+Popup content:
+
+"One of the most defining experiences in my engineering journey has been leading
+the coding domain at SRM Team RoboCON.
+
+I led a team of 15 people within a larger robotics team, contributing to systems
+that brought together software, perception, control, embedded systems, and
+autonomous behavior.
+
+Competition preparation demanded persistence, difficult technical decisions,
+coordination, and a willingness to take responsibility for work that could determine
+whether the overall system functioned.
+
+That experience reinforced something I value: taking ownership means caring about
+the outcome, understanding the problem deeply, and doing what is needed to move
+the team forward.
+
+I care less about having a particular title than about making a meaningful contribution."
+
+Purpose:
+Make ownership and leadership central to my identity.
+
+Do not describe me as a heroic individual who single-handedly accomplished everything.
+Present the experience as substantial technical responsibility within a team.
+
+Do not mention extreme sleep deprivation or glorify unhealthy working conditions.
+
+### SECTOR 05 — ENGINEERING
+
+Short label:
+ENGINEERING
+
+Hover content:
+AI, software, infrastructure, and everything between.
+
+Popup title:
+ACROSS THE STACK
+
+Popup content:
+
+"My work has taken me beyond model development into the systems required to make
+software useful.
+
+I have worked with backend services, microservices, databases, containers, cloud
+infrastructure, APIs, workflow automation, and deployment pipelines.
+
+I enjoy moving between different layers of a problem when necessary, whether that
+means understanding an AI component, investigating an integration issue, or working
+through the architecture of an application.
+
+I do not want to be limited by a narrow definition of what an AI engineer should do.
+I want to understand the technologies around the model and how they contribute to
+the final product."
+
+Purpose:
+Demonstrate technical breadth without creating a long list of technologies.
+
+### SECTOR 06 — RECOGNITION
+
+Short label:
+MILESTONES
+
+Hover content:
+Research, competition, and achievements along the way.
+
+Popup title:
+MILESTONES
+
+Popup content:
+
+"Some milestones that reflect my work so far:
+
+BEST PAPER AWARD — ICBSII 2026
+Recognized for DeepSight, an AI-driven navigation assistance system for visually
+impaired users.
+
+AIR 5 — DD ROBOCON 2026
+Part of the SRM team that achieved an All India Rank of 5 in the competition.
+
+SECOND PLACE — LLMVERSE HACKATHON
+Developed a voice-controlled AI assistant for visually impaired users, integrating
+speech technologies and large language models.
+
+9.85 CGPA — SRMIST
+Academic performance in Computer Science and Engineering with Artificial Intelligence
+and Machine Learning."
+
+Purpose:
+Provide concrete evidence of my work without repeating complete project descriptions.
+
+Implementation requirements:
+- Preserve the exact award names and distinctions.
+- Do not change the meaning of AIR 5 or attribute an individual team achievement
+  exclusively to me.
+- Keep this content concise within the existing popup.
+- If the current popup supports structured entries, use that existing structure.
+
+### SECTOR 07 — BEYOND CODE
+
+Short label:
+BEYOND CODE
+
+Hover content:
+Football, cricket, basketball, F1, and a curious mind.
+
+Popup title:
+OUTSIDE THE TERMINAL
+
+Popup content:
+
+"Engineering is a big part of what I do, but it is not the whole picture.
+
+I enjoy football, cricket, basketball, Formula 1, and reading.
+
+I am also a big admirer of Cristiano Ronaldo. His competitive mentality,
+discipline, and persistence are qualities I find inspiring.
+
+Outside technical work, I enjoy having interests that give me something else
+to think about, learn from, and look forward to."
+
+Purpose:
+Make the page feel personal and human.
+
+Do not invent additional hobbies, personal history, or biographical details.
+
+Keep this section relaxed and conversational rather than making it sound like
+another professional summary.
+
+### SECTOR 08 — CURIOSITY
+
+Short label:
+CURIOSITY
+
+Hover content:
+Exploring ideas, learning continuously, and building what matters.
+
+Popup title:
+ALWAYS EXPLORING
+
+Popup content:
+
+"I do not have every step of my future mapped out, and I am comfortable with that.
+
+I want to keep learning, working on interesting problems, and developing the ability
+to build things that are genuinely useful.
+
+The possibility of eventually creating a meaningful product or starting something
+of my own excites me. But I do not see one particular career path as the only
+definition of success.
+
+For now, I want to keep exploring, become a better engineer, and work on problems
+worth solving.
+
+I am interested in what I can build next, not just what I have already built."
+
+Purpose:
+Communicate ambition and curiosity without making grandiose claims or implying
+that I am already running a startup.
+
+## 8. CONTENT HIERARCHY AND DISPLAY RULES
+
+The content must work within the existing interface.
+
+### Central card
+
+Use the concise identity and introduction specified above.
+
+Do not put the complete biography in the central card.
+
+### Sector labels
+
+Keep labels short and scannable.
+
+Prefer the one- or two-word labels specified above.
+
+Do not display the popup descriptions permanently around the portrait.
+
+### Hover state
+
+Use the existing hover expansion behavior.
+
+Display the corresponding short hover description.
+
+Do not add new animations or interaction patterns.
+
+Do not change the existing hover timing, animation, or expansion mechanics.
+
+### Click state
+
+Use the existing click interaction to show the relevant sector popup.
+
+Populate the popup with its corresponding title and content.
+
+Keep the content associated with the correct sector.
+
+Do not make all sectors open the same popup.
+
+Do not replace an existing modal system with a new one.
+
+If the existing popup supports a title and body, populate those fields.
+
+If it supports structured content, use the existing structure.
+
+### Existing labels and technical metadata
+
+Preserve the established visual treatment of the numbered sectors.
+
+Update the sector identifiers and their associated content consistently.
+
+If there are existing placeholder subtitles, tags, or metadata, replace them only when
+they clearly belong to the About-section content being populated.
+
+Do not change unrelated interface text.
+
+## 9. CONTENT ACCURACY
+
+Use my resume and the information supplied in this prompt as the source of truth.
+
+My resume includes the following relevant experiences:
+
+- AI and ML Intern at Siemens COE–TANSAM.
+- AI Data Annotator at DataAnnotation.tech.
+- AI development experience at Prorouting Tech.
+- DeepSight, an AI-driven navigation assistance project that received the Best Paper
+  Award at ICBSII 2026.
+- A humanoid robot interaction system involving ASR, NLP, RAG, response generation,
+  and TTS.
+- An AI-powered virtual teaching assistant.
+- A cloud-native banking platform built with Spring Boot microservices, Docker,
+  PostgreSQL, and Azure.
+- Robotics systems and simulation work involving ROS2, Docker, and embedded systems.
+- Workflow automation and RAG integration projects.
+- Leadership of the coding domain at SRM Team RoboCON.
+- A second-place finish at LLMVerse Hackathon.
+- AIR 5 at DD ROBOCON 2026.
+
+Do not invent additional qualifications, awards, metrics, responsibilities, or outcomes.
+
+Do not add professional claims that are not supported by the resume or this prompt.
+
+The eight sectors are intended to communicate my personality, interests, approach,
+and professional identity. They are not intended to reproduce my complete resume.
+
+My Experience section will provide the detailed chronology of my professional work.
+
+## 10. TECHNICAL CONSTRAINTS
+
+These constraints are mandatory.
+
+1. Preserve the current design and layout.
+2. Preserve the existing dither-veil portrait.
+3. Preserve the orbital halo and its geometry.
+4. Preserve all existing navigation.
+5. Preserve the current hover expansion behavior.
+6. Preserve the current click and popup behavior.
+7. Do not replace the existing components with a new implementation.
+8. Do not introduce a new UI framework.
+9. Do not install new dependencies unless absolutely necessary.
+10. Do not modify the Home, Experience, or Socials sections.
+11. Do not modify unrelated CSS, styles, animations, or application configuration.
+12. Do not replace working interactions with static text.
+13. Avoid unnecessary code duplication.
+14. Preserve existing responsiveness and accessibility behavior.
+15. Ensure that the content does not overflow the existing cards or popups.
+
+If content is managed through a shared data structure, update that structure rather than
+creating a separate content system.
+
+If any requested content field does not exist in the current implementation, adapt
+the content to the existing component schema instead of redesigning the component.
+
+## 11. VALIDATION
+
+After implementation:
+
+1. Verify that the central card displays the correct identity and introduction.
+2. Verify that all eight sector labels are correct.
+3. Verify that hovering over each sector displays the correct short description.
+4. Verify that clicking each sector opens its corresponding content.
+5. Check that content is not accidentally duplicated or associated with the wrong sector.
+6. Verify that the popup content fits within the existing interface.
+7. Check for broken links, rendering errors, or console errors introduced by the changes.
+8. Verify that the rest of the portfolio remains unchanged.
+
+If browser-based testing is available, exercise each sector rather than merely inspecting
+the source code.
+
+## 12. FINAL REPORT
+
+When finished, provide a concise report stating:
+
+- Which files were modified.
+- Which content placeholders were populated.
+- Whether all eight sectors work correctly.
+- Whether the central card was updated.
+- Whether any requested content could not be accommodated by the existing components.
+
+Do not perform unrelated cleanup or refactoring.
+
+Do not make further design changes.
+
+The task is complete when the existing About interface contains the specified content
+and all existing interactions continue to work correctly.

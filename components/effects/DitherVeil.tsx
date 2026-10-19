@@ -8,7 +8,11 @@ const DEFAULT_SRC = '/images/about/portrait-green-kurta.png';
 
 const resolveSrc = (path: string): string => {
   if (!path) return DEFAULT_SRC;
-  if (path.includes('Smiling Night Portrait in Green Kurta.png') || path.includes('portrait-green-kurta')) {
+  if (
+    path.includes('Smiling') ||
+    path.includes('portrait-green-kurta') ||
+    path.includes('removebg')
+  ) {
     return '/images/about/portrait-green-kurta.png';
   }
   return path;
