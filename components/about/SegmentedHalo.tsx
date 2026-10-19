@@ -306,7 +306,7 @@ export default function SegmentedHalo({
             // Midpoint of outer arc where the horizontal projection beam attaches
             const pOuterMid = polarToCartesian(R_OUTER, mid);
             const beamEndX = isLeft ? -780 : 780;
-            const labelX = isLeft ? -760 : 760;
+            const headingX = isLeft ? pOuterMid.x + dx - 24 : pOuterMid.x + dx + 24;
 
             return (
               <g
@@ -338,14 +338,16 @@ export default function SegmentedHalo({
                         : "url(#lane-grad-right-active)"
                       : "transparent"
                   }
+                  pointerEvents="all"
                   className="transition-all duration-300"
                 />
 
                 {/* 
-                  2. Horizontal Technical Projection Beam
-                  Projects horizontally outward from the arc to the screen edge.
+                  2. Horizontal Technical Projection Beam & Heading
+                  Positioned right NEXT TO the circle arc (no overlap with the circle).
                 */}
                 <g className="pointer-events-none transition-all duration-300">
+                  {/* Horizontal Guideline running from arc edge outward */}
                   <line
                     x1={pOuterMid.x + dx}
                     y1={pOuterMid.y + dy}
@@ -362,6 +364,18 @@ export default function SegmentedHalo({
                     }}
                   />
 
+                  {/* Precision Interface Pin at Circle Arc Boundary */}
+                  <circle
+                    cx={pOuterMid.x + dx}
+                    cy={pOuterMid.y + dy}
+                    r={isHovered ? 4 : 2.5}
+                    fill="#d49b6a"
+                    className="transition-all duration-300"
+                    style={{
+                      filter: isHovered ? "drop-shadow(0 0 6px rgba(212, 155, 106, 0.9))" : "none",
+                    }}
+                  />
+
                   {/* Outer Technical Terminal Bracket & Crosshair Tick */}
                   <line
                     x1={beamEndX}
@@ -373,24 +387,26 @@ export default function SegmentedHalo({
                     className="transition-colors duration-300"
                   />
 
-                  {/* Outer Technical Label Readout (Short scannable label always visible; tagline reveals on hover) */}
+                  {/* Section Heading positioned NEXT TO the circle (enlarged, prominent, non-overlapping) */}
                   <text
-                    x={labelX}
-                    y={pOuterMid.y + dy - 2}
-                    textAnchor={isLeft ? "start" : "end"}
-                    className={`font-mono text-[13px] sm:text-[14px] tracking-wider uppercase transition-all duration-300 ${
+                    x={headingX}
+                    y={pOuterMid.y + dy - 8}
+                    textAnchor={isLeft ? "end" : "start"}
+                    className={`font-mono text-[17px] sm:text-[19px] md:text-[21px] tracking-wider uppercase font-bold transition-all duration-300 ${
                       isHovered
-                        ? "fill-accent font-bold drop-shadow-[0_0_10px_rgba(212,155,106,0.9)]"
-                        : "fill-foreground/80 font-semibold drop-shadow-[0_0_4px_rgba(0,0,0,0.8)]"
+                        ? "fill-accent drop-shadow-[0_0_12px_rgba(212,155,106,0.95)]"
+                        : "fill-foreground drop-shadow-[0_0_6px_rgba(0,0,0,0.85)]"
                     }`}
                   >
                     {`${sec.index} ${sec.shortCode}`}
                   </text>
+
+                  {/* Tagline revealed on hover directly under the heading */}
                   {isHovered && (
                     <text
-                      x={labelX}
-                      y={pOuterMid.y + dy + 18}
-                      textAnchor={isLeft ? "start" : "end"}
+                      x={headingX}
+                      y={pOuterMid.y + dy + 20}
+                      textAnchor={isLeft ? "end" : "start"}
                       className="font-mono text-[11px] sm:text-[12px] tracking-wide fill-accent/95 font-medium animate-fadeIn drop-shadow-[0_0_4px_rgba(0,0,0,0.8)]"
                     >
                       {sec.tagline}
@@ -436,7 +452,7 @@ export default function SegmentedHalo({
                     />
                   )}
 
-                  {/* Sector Typography & Indicator Tag inside the Arc */}
+                  {/* Precision Indicator Pip inside the Arc (No text overlapping the circle) */}
                   <g
                     style={{
                       transform: `translate(${labelPos.x}px, ${labelPos.y}px)`,
@@ -445,23 +461,16 @@ export default function SegmentedHalo({
                   >
                     <circle
                       cx="0"
-                      cy="-10"
-                      r={isHovered ? 5 : 3.5}
-                      fill={isHovered ? "#d49b6a" : "rgba(212,155,106,0.85)"}
+                      cy="0"
+                      r={isHovered ? 4.5 : 3}
+                      fill={isHovered ? "#d49b6a" : "rgba(212,155,106,0.75)"}
                       className="transition-all duration-300"
+                      style={{
+                        filter: isHovered
+                          ? "drop-shadow(0 0 8px rgba(212, 155, 106, 0.9))"
+                          : "none",
+                      }}
                     />
-                    <text
-                      x="0"
-                      y="10"
-                      textAnchor="middle"
-                      className={`font-mono text-[13px] tracking-wider uppercase transition-colors duration-300 ${
-                        isHovered
-                          ? "fill-accent font-extrabold drop-shadow-[0_0_8px_rgba(212,155,106,0.9)]"
-                          : "fill-foreground font-bold drop-shadow-[0_0_4px_rgba(0,0,0,0.8)]"
-                      }`}
-                    >
-                      {sec.index} · {sec.shortCode}
-                    </text>
                   </g>
                 </g>
               </g>
